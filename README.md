@@ -8,7 +8,6 @@ Using .NET and Visual Studio 2017 for creating a website
 
 These are the rules used throughout the App Model:
 
-    **About associations:**
 1. An User has many Versions
 2. Every Version is for a unique Article
 3. Every Article has 1 or more Categories associated with it
