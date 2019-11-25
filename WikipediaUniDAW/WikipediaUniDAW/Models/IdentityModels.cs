@@ -25,6 +25,12 @@ namespace WikipediaUniDAW.Models
         {
         }
 
+        public DbSet<Article> Articles { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Chapter> Chapters { get; set; }
+        public DbSet<Image> Images { get; set; }
+        public DbSet<Version> Versions { get; set; }
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
