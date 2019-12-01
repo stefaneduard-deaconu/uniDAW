@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -24,6 +25,11 @@ namespace WikipediaUniDAW.Models {
         [Required(ErrorMessage = "Title is required!")]
         [StringLength(30, ErrorMessage = "Title's length can't be greater than 30 characters!")]
         public string Title { get; set; }
+
+        // the article's creator or a moderator can specify if an article needs protection
+        // i.e. make unregistered users unable to edit the article
+        [DefaultValue(false)]
+        public bool Protected { get; set; } = false;
 
         /**
          * Navigation Properties
