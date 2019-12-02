@@ -1,0 +1,20 @@
+﻿@model WikipediaUniDAW.Models.Category
+
+@{
+    ViewBag.Title = "New Category";
+}
+
+<h2>@ViewBag.Title</h2>
+<br />
+
+@using (Html.BeginForm(actionName: "New", controllerName: "Category")) {
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    @Html.Label("Name", "Category Name")
+
+    @Html.TextBox("Name", null, new { @class = "form-control" })
+    <br />
+
+    <button class="btn btn-primary" type="submit">Add new category</button>
+}
+

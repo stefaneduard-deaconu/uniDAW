@@ -1,0 +1,35 @@
+﻿@model WikipediaUniDAW.Models.Category
+@{
+    ViewBag.Title = "Categories";
+}
+
+<h2 class="text-center">List of Categories</h2>
+<br />
+
+@if (TempData.ContainsKey("categoryMessage")) {
+    <h3 class="alert alert-info text-center" role="alert">@ViewBag.categoryMessage</h3>
+}
+
+<a class="btn btn-primary" href="/Category/New" style="display: block; margin-left: auto; margin-right: auto; width: 25%; min-width: 150px;">
+    Add new category
+</a>
+<br /> <br />
+
+@foreach (var category in ViewBag.Categories) {
+    <div class="container" style="width: 40%">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">@category.Name</h3>
+            </div>
+            <div class="panel-body">
+                <a class="btn btn-primary" href="/Category/Edit/@category.CategoryId">Edit</a>
+
+                <form method="post" action="/Category/Delete/@category.CategoryId" style="display: inline">
+                    @Html.HttpMethodOverride(HttpVerbs.Delete)
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <br />
+}

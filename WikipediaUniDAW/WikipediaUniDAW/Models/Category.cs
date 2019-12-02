@@ -13,7 +13,7 @@ namespace WikipediaUniDAW.Models {
         [Key]
         public int CategoryId { get; set; }
 
-        [Required(ErrorMessage = "Name is required!")]
+        [Required(ErrorMessage = "Category name is required!")]
         public string Name { get; set; }
 
         /**

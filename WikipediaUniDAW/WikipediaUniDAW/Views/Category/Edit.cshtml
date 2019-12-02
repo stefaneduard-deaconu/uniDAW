@@ -1,0 +1,22 @@
+﻿@model WikipediaUniDAW.Models.Category
+@{
+    ViewBag.Title = "Edit category";
+}
+
+<h2>@ViewBag.Title</h2>
+<br />
+
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Category")) {
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    @Html.Hidden("CategoryId", Model.CategoryId)
+
+    @Html.Label("Name", "New Category Name")
+    <br />
+    @Html.Editor("Name")
+    <br /><br />
+
+    <button class="btn btn-primary" type="submit">Modify category</button>
+}
