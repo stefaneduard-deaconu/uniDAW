@@ -13,10 +13,10 @@ namespace WikipediaUniDAW
         {
             ConfigureAuth(app);
 
-            CreateAdminEditorRegularUsersAndApplicationRoles();
+            CreateAdminModeratorRegularUsersAndApplicationRoles();
         }
 
-        private void CreateAdminEditorRegularUsersAndApplicationRoles() {
+        private void CreateAdminModeratorRegularUsersAndApplicationRoles() {
             ApplicationDbContext context = new ApplicationDbContext();
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));

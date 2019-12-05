@@ -30,7 +30,7 @@ namespace WikipediaUniDAW.Models {
 
         public int VersionNo { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime DateChange { get; set; }
 
         public string DescriptionChange { get; set; }
 
