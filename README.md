@@ -28,3 +28,29 @@ Every Version must have an associated Article - we don't create Versions on thei
 11. When we delete an article, we don't keep neither the images, nor the CachedChapters, nor the Versions
 12. IN the same way, when we are deleting a Version (like the most recent one), we don't keep the unnecessary Images, nor the associated CachedChapters
 13. We only delete Galleries when their associated Chapter is deleted. So the deletion of a Chapted eliminates a Gallery and possibly Images.
+
+## As a user... what can I do?
+### 1. Unregistered User
+- able to read any article
+- able to edit any _unfrozen unprotected_ article
+
+### 2. Registered User
+- able to do anything an **unregistered user** does
+- able to create an article
+- able to edit any _unfrozen protected_ article
+- able to delete own articles
+- able to _protect/unprotect_ own _unfrozen_ articles (so that unregistered users cannot edit the article)
+
+### 3. Moderator
+- able to do anything a **registered user** does
+- able to revert any _unfrozen_ article to older versions
+- able to _protect/unprotect_ any _unfrozen_ article (so that unregistered users cannot edit the article)
+
+### 4. Admin
+- able to do anything a **moderator** does
+- able to delete any article
+- able to CRUD categories
+- able to read users information
+- able to edit users information
+- able to delete users
+- able to _freeze_ any article (so that only the admin can edit and revert changes)
