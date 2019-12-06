@@ -12,6 +12,7 @@ namespace WikipediaUniDAW.Models {
          */
 
         [Key]
+        [ForeignKey("CurrentArticle")]
         public int VersionId { get; set; }
 
         [ForeignKey("Article")]
@@ -38,7 +39,10 @@ namespace WikipediaUniDAW.Models {
          * Navigation Properties
          */
 
+        [InverseProperty("Versions")]
         public virtual Article Article { get; set; }
+
+        public virtual Article CurrentArticle { get; set; }
 
         public virtual ApplicationUser ModifierUser { get; set; }
 

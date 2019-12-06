@@ -22,6 +22,9 @@ namespace WikipediaUniDAW.Models {
         [ForeignKey("CreatorUser")]
         public string CreatorUserId { get; set; }
 
+        [ForeignKey("CurrentVersion")]
+        public int CurrentVersionId { get; set; }
+
         [Required(ErrorMessage = "Title is required!")]
         [StringLength(30, ErrorMessage = "Title's length can't be greater than 30 characters!")]
         public string Title { get; set; }
@@ -40,10 +43,12 @@ namespace WikipediaUniDAW.Models {
          * Navigation Properties
          */
 
-        public virtual ICollection<Version> Versions { get; set; }
-
         public virtual Category Category { get; set; }
 
         public virtual ApplicationUser CreatorUser { get; set; }
+
+        public virtual Version CurrentVersion { get; set; }
+
+        public virtual ICollection<Version> Versions { get; set; }
     }
 }
