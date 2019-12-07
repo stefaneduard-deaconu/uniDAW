@@ -31,7 +31,7 @@ namespace WikipediaUniDAW
                 
                 // add the admin user
                 var user = new ApplicationUser();
-                user.UserName = "admin@admin.com";
+                user.UserName = "Admin";
                 user.Email = "admin@admin.com";
                 var adminCreated = UserManager.Create(user, "12wq!@WQ");
                 if (adminCreated.Succeeded) {
@@ -48,7 +48,7 @@ namespace WikipediaUniDAW
 
                 // add a moderator user
                 var user = new ApplicationUser();
-                user.UserName = "moderator@moderator.com";
+                user.UserName = "Moderator";
                 user.Email = "moderator@moderator.com";
                 var moderatorCreated = UserManager.Create(user, "12wq!@WQ");
                 if (moderatorCreated.Succeeded) {
@@ -65,7 +65,7 @@ namespace WikipediaUniDAW
 
                 // add a regular user
                 var user = new ApplicationUser();
-                user.UserName = "user@user.com";
+                user.UserName = "User";
                 user.Email = "user@user.com";
                 var userCreated = UserManager.Create(user, "12wq!@WQ");
                 if (userCreated.Succeeded) {

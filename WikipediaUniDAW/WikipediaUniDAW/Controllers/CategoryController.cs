@@ -13,8 +13,7 @@ namespace WikipediaUniDAW.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         [HttpGet]
-        public ActionResult Index()
-        {
+        public ActionResult Index() {
             // keep track of printing the temporary message related to adding / editing / removing a category
             if (TempData.ContainsKey("categoryMessage")) {
                 ViewBag.categoryMessage = TempData["categoryMessage"].ToString();
@@ -63,7 +62,7 @@ namespace WikipediaUniDAW.Controllers
                     Category category = db.Categories.Find(id);
                     if (TryUpdateModel(category)) {
                         category.Name = requestCategory.Name;
-                        TempData["categoryMessage"] = "The category has been modified!";
+                        TempData["categoryMessage"] = "The category has been saved!";
                         db.SaveChanges();
                     }
                     return RedirectToAction("Index");

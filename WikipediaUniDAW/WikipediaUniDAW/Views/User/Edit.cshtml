@@ -1,0 +1,33 @@
+﻿@model WikipediaUniDAW.Models.ApplicationUser
+@{
+    ViewBag.Title = "Edit User";
+}
+
+<h2>@ViewBag.Title</h2>
+<br />
+
+<form method="post" action="/User/Edit/@Model.Id">
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+    @Html.Hidden("Id")
+
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    <i class="glyphicon glyphicon-user"></i>
+    @Html.Label("UserName", "User Name", new { @class = "" })
+    <br />
+    @Html.Editor("UserName")
+    <br /><br />
+
+    <i class="glyphicon glyphicon-envelope"></i>
+    @Html.Label("Email", "User Email", new { @class = "" })
+    <br />
+    @Html.Editor("Email")
+    <br /><br />
+
+    <i class="glyphicon glyphicon-th-list"></i>
+    <label>User Role</label>
+    @Html.DropDownList("newAssignedRole", new SelectList(Model.AllRoles, "Value", "Text", (string)ViewBag.UserRole), null, new { @class = "form-control" })
+    <br />
+
+    <button class="btn btn-sm btn-success" type="submit">Save User</button>
+</form>
