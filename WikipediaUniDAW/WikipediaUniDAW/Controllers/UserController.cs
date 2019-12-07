@@ -29,6 +29,13 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpGet]
+        public ActionResult Show(string id) {
+            ApplicationUser user = db.Users.Find(id);
+            ViewBag.UserRoleName = GetUserRoleName(user);
+            return View(user);
+        }
+
+        [HttpGet]
         public ActionResult Edit(string id) {
             ApplicationUser user = db.Users.Find(id);
             user.AllRoles = GetAllRoles();
@@ -70,9 +77,15 @@ namespace WikipediaUniDAW.Controllers
         [HttpDelete]
         public ActionResult Delete(string id) {
             ApplicationUser user = db.Users.Find(id);
+
+            if (GetUserRoleName(user) == "Administrator") {
+                return RedirectToAction("Index");
+            }
+
             db.Users.Remove(user);
             TempData["userCrudMessage"] = "The user has been deleted!";
             db.SaveChanges();
+
             return RedirectToAction("Index");
         }
 
@@ -87,6 +100,14 @@ namespace WikipediaUniDAW.Controllers
                 });
             }
             return selectList;
+        }
+
+        [NonAction]
+        public string GetUserRoleName(ApplicationUser user) {
+            var userRole = user.Roles.FirstOrDefault();
+            return (from role in db.Roles
+                    where role.Id == userRole.RoleId
+                    select role.Name).ToArray()[0];
         }
     }
 }

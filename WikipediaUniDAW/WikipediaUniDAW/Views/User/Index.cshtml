@@ -20,12 +20,7 @@
                     </h3>
                 </div>
                 <div class="panel-body">
-                    <a class="btn btn-primary" href="/User/Edit/@user.Id"> Edit</a>
-
-                    <form method="post" action="/User/Delete/@user.Id" style="display: inline">
-                        @Html.HttpMethodOverride(HttpVerbs.Delete)
-                        <button class="btn btn-danger" type="submit">Delete</button>
-                    </form>
+                    <a class="btn btn-primary" href="/User/Show/@user.Id"> Show Details</a>
                 </div>
             </div>
         </div>

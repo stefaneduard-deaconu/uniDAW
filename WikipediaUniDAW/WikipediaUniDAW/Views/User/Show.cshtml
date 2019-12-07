@@ -1,7 +1,33 @@
-﻿
+﻿@model WikipediaUniDAW.Models.ApplicationUser
 @{
-    ViewBag.Title = "Show";
+    ViewBag.Title = "User Details";
 }
 
-<h2>Show</h2>
+<h2 class="text-center">@ViewBag.Title</h2>
+<br />
 
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <i class="glyphicon glyphicon-user"></i> @Model.UserName
+                <br /><br />
+                <i class="glyphicon glyphicon-envelope"></i> @Model.Email
+                <br /><br />
+                <i class="glyphicon glyphicon-paperclip"></i> @ViewBag.UserRoleName
+            </div>
+            <div class="panel-footer">
+                <a class="btn btn-primary" href="/User/Index"> Back</a>
+
+                <a class="btn btn-primary" href="/User/Edit/@Model.Id"> Edit</a>
+
+                @if (ViewBag.UserRoleName != "Administrator") {
+                    <form method="post" action="/User/Delete/@Model.Id" style="display: inline">
+                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

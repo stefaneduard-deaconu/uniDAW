@@ -3,7 +3,7 @@
     ViewBag.Title = "Edit User";
 }
 
-<h2>@ViewBag.Title</h2>
+<h1>@ViewBag.Title</h1>
 <br />
 
 <form method="post" action="/User/Edit/@Model.Id">
@@ -29,5 +29,5 @@
     @Html.DropDownList("newAssignedRole", new SelectList(Model.AllRoles, "Value", "Text", (string)ViewBag.UserRole), null, new { @class = "form-control" })
     <br />
 
-    <button class="btn btn-sm btn-success" type="submit">Save User</button>
+    <button class="btn btn-sm btn-primary" type="submit">Save User</button>
 </form>
