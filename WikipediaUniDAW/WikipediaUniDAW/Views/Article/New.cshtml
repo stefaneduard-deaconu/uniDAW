@@ -1,0 +1,35 @@
+﻿@model WikipediaUniDAW.Models.Article
+@{
+    ViewBag.Title = "Article Creation";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm(actionName: "New", controllerName: "Article")) {
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    @Html.Hidden("CreatorUserId");
+
+    @Html.Hidden("CurrentVersionId");
+
+    @Html.Hidden("CreationDate", DateTime.Now, new { @class = "form-control" })
+
+    @Html.Label("Title", "Article Title")
+    @Html.TextBox("Title", "", new { @class = "form-control" })
+    <br />
+
+    <label>Choose a category</label>
+    @Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.Categories, "Value", "Text"),
+        "Choose a category", new { @class = "form-control" })
+    <br />
+
+    @Html.CheckBox("Protected", false);
+    @Html.Label("Protected", "Article should be protected.")
+    <br />
+
+    @Html.CheckBox("Frozen", false);
+    @Html.Label("Frozen", "Article should be frozen.")
+    <br /><br />
+
+    <button class="btn btn-primary" type="submit">Next Step</button>
+}

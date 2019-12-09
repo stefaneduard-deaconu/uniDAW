@@ -1,0 +1,42 @@
+﻿@model WikipediaUniDAW.Models.Version
+@{
+    ViewBag.Title = "Article Creation";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>Chapters</h3>
+
+<a class="btn btn-primary" href="/Chapter/NewChapterForNewArticle/@Model.Article.ArticleId"> Add chapter </a>
+<br /><br />
+
+@foreach (var chapter in Model.Chapters) {
+    <div class="panel panel-default">
+        <div class="row">
+            <div class="col-md-10">
+                <h3 class="panel-title">@chapter.Title</h3>
+            </div>
+            <div class="col-md-1">
+                <a class="btn btn-primary" href="/Chapter/EditChapterForNewArticle/@chapter.ChapterId/@chapter.Version.Article.ArticleId">Edit</a>
+            </div>
+            <div class="col-md-1">
+                <form method="post" action="/Chapter/Delete/@chapter.ChapterId/@chapter.Version.Article.ArticleId" style="display: inline">
+                        @Html.HttpMethodOverride(HttpVerbs.Delete)
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm(actionName: "NewVersionForNewArticle", controllerName: "Version")) {
+
+    @Html.HiddenFor(m => m.VersionId)
+    @Html.HiddenFor(m => m.ArticleId)
+    @Html.HiddenFor(m => m.ModifierUserId)
+    @Html.HiddenFor(m => m.VersionNo)
+    @Html.Hidden("DateChange", DateTime.Now, new { @class = "form-control" })
+    @Html.HiddenFor(m => m.DescriptionChange)
+
+    <button class="btn btn-primary" type="submit">Create article</button>
+}

@@ -12,7 +12,7 @@ namespace WikipediaUniDAW.Models {
          */
 
         [Key]
-        [ForeignKey("CurrentArticle")]
+        //[ForeignKey("CurrentArticle")]
         public int VersionId { get; set; }
 
         [ForeignKey("Article")]
@@ -31,7 +31,7 @@ namespace WikipediaUniDAW.Models {
 
         public int VersionNo { get; set; }
 
-        public DateTime DateChange { get; set; }
+        public DateTime? DateChange { get; set; }
 
         public string DescriptionChange { get; set; }
 
@@ -42,7 +42,7 @@ namespace WikipediaUniDAW.Models {
         [InverseProperty("Versions")]
         public virtual Article Article { get; set; }
 
-        public virtual Article CurrentArticle { get; set; }
+        public virtual ICollection<Article> CurrentArticle { get; set; }
 
         public virtual ApplicationUser ModifierUser { get; set; }
 

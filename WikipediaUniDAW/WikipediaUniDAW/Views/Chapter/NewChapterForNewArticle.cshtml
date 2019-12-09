@@ -1,0 +1,24 @@
+﻿@model WikipediaUniDAW.Models.Chapter
+@{
+    ViewBag.Title = "Article Creation";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>Chapter Creation</h3>
+
+@using (Html.BeginForm(actionName: "NewChapterForNewArticle", controllerName: "Chapter")) {
+
+    @Html.HiddenFor(m => m.ChapterId)
+    @Html.HiddenFor(m => m.VersionId)
+
+    @Html.Label("Title", "Chapter Title")
+    @Html.TextBox("Title", "", new { @class = "form-control" })
+
+    @Html.Label("Content", "Chapter Content")
+    @Html.TextArea("Content", "", new { @class = "form-control" })
+    <br /><br />
+
+    <button class="btn btn-primary" type="submit">Add Chapter</button>
+}
+

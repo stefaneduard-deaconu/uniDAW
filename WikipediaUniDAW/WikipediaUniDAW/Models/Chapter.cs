@@ -12,7 +12,7 @@ namespace WikipediaUniDAW.Models {
          */
 
         [Key]
-        [ForeignKey("AffectedVersion")]
+        //[ForeignKey("AffectedVersion")]
         public int ChapterId { get; set; }
 
         [ForeignKey("Version")]
@@ -30,7 +30,7 @@ namespace WikipediaUniDAW.Models {
          */
 
         // the version which is created by adding / changing / removing this chapter
-        public virtual Version AffectedVersion { get; set; }
+        public virtual ICollection<Version> AffectedVersion { get; set; }
         
         [InverseProperty("Chapters")]
         public virtual Version Version { get; set; }

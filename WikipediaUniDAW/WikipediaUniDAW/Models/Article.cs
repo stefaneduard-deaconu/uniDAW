@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace WikipediaUniDAW.Models {
     public class Article {
@@ -23,11 +24,13 @@ namespace WikipediaUniDAW.Models {
         public string CreatorUserId { get; set; }
 
         [ForeignKey("CurrentVersion")]
-        public int CurrentVersionId { get; set; }
+        public int? CurrentVersionId { get; set; }
 
         [Required(ErrorMessage = "Title is required!")]
         [StringLength(30, ErrorMessage = "Title's length can't be greater than 30 characters!")]
         public string Title { get; set; }
+
+        public DateTime CreationDate { get; set; }
 
         // the article's owner or a moderator can specify if an article needs protection
         // i.e. make unregistered users unable to edit the article
@@ -50,5 +53,11 @@ namespace WikipediaUniDAW.Models {
         public virtual Version CurrentVersion { get; set; }
 
         public virtual ICollection<Version> Versions { get; set; }
+
+        /**
+         * Other properties
+         */
+
+        public IEnumerable<SelectListItem> Categories { get; set; }
     }
 }
