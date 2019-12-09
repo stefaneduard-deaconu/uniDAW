@@ -14,10 +14,11 @@
 
     @Html.Label("Title", "Chapter Title")
     @Html.TextBox("Title", "", new { @class = "form-control" })
+    <br />
 
     @Html.Label("Content", "Chapter Content")
-    @Html.TextArea("Content", "", new { @class = "form-control" })
-    <br /><br />
+    @Html.TextArea("Content", "", new { @class = "form-control summernote" })
+    <br />
 
     <button class="btn btn-primary" type="submit">Add Chapter</button>
 }

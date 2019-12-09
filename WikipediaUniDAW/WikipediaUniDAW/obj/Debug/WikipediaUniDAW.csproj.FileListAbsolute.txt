@@ -103,3 +103,7 @@ D:\FACULTATE\Semestrul 5\DAW\Proiect\uniDAW\WikipediaUniDAW\WikipediaUniDAW\obj\
 D:\FACULTATE\Semestrul 5\DAW\Proiect\uniDAW\WikipediaUniDAW\WikipediaUniDAW\obj\Debug\WikipediaUniDAW.csproj.CopyComplete
 D:\FACULTATE\Semestrul 5\DAW\Proiect\uniDAW\WikipediaUniDAW\WikipediaUniDAW\obj\Debug\WikipediaUniDAW.dll
 D:\FACULTATE\Semestrul 5\DAW\Proiect\uniDAW\WikipediaUniDAW\WikipediaUniDAW\obj\Debug\WikipediaUniDAW.pdb
+D:\FACULTATE\Semestrul 5\DAW\Proiect\uniDAW\WikipediaUniDAW\WikipediaUniDAW\bin\AntiXssLibrary.dll
+D:\FACULTATE\Semestrul 5\DAW\Proiect\uniDAW\WikipediaUniDAW\WikipediaUniDAW\bin\HtmlSanitizationLibrary.dll
+D:\FACULTATE\Semestrul 5\DAW\Proiect\uniDAW\WikipediaUniDAW\WikipediaUniDAW\bin\AntiXssLibrary.xml
+D:\FACULTATE\Semestrul 5\DAW\Proiect\uniDAW\WikipediaUniDAW\WikipediaUniDAW\bin\HtmlSanitizationLibrary.xml

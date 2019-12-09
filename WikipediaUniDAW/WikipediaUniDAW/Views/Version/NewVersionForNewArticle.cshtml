@@ -7,6 +7,11 @@
 
 <h3>Chapters</h3>
 
+@if (TempData.ContainsKey("versionMessage")) {
+    <h3 class="alert alert-info text-center" role="alert">@ViewBag.versionMessage</h3>
+}
+
+<br />
 <a class="btn btn-primary" href="/Chapter/NewChapterForNewArticle/@Model.Article.ArticleId"> Add chapter </a>
 <br /><br />
 
@@ -21,8 +26,8 @@
             </div>
             <div class="col-md-1">
                 <form method="post" action="/Chapter/Delete/@chapter.ChapterId/@chapter.Version.Article.ArticleId" style="display: inline">
-                        @Html.HttpMethodOverride(HttpVerbs.Delete)
-                        <button class="btn btn-danger" type="submit">Delete</button>
+                    @Html.HttpMethodOverride(HttpVerbs.Delete)
+                    <button class="btn btn-danger" type="submit">Delete</button>
                 </form>
             </div>
         </div>

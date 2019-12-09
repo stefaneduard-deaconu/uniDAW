@@ -59,15 +59,29 @@ namespace WikipediaUniDAW.Controllers
         [HttpPost]
         public ActionResult NewVersionForNewArticle(Models.Version version) {
 
+            DeleteEmptyChaptersFromDataBase();
+
             try {
                 if (ModelState.IsValid) {
+
                     Models.Version realVersion = db.Versions.Find(version.VersionId);
 
+                    Chapter[] chaptersOfVersion = (from chapter in db.Chapters
+                                                   where chapter.VersionId == version.VersionId
+                                                   select chapter).ToArray();
+
+                    if (chaptersOfVersion.Length == 0) {
+                        TempData["versionMessage"] = "Please create at least one chapter for the new article.";
+                        ViewBag.versionMessage = TempData["versionMessage"].ToString();
+                        return View(realVersion);
+                    }
+
                     if (TryUpdateModel(realVersion)) {
-                        realVersion.Chapters = version.Chapters;
+                        realVersion.Chapters = chaptersOfVersion;
                         realVersion.DateChange = DateTime.Now;
                         db.SaveChanges();
                     }
+                    
                     return RedirectToRoute("Articles of category", new { categoryId = realVersion.Article.CategoryId, sortingCriteria = 1 });
                 } else {
                     return View(version);
@@ -76,6 +90,19 @@ namespace WikipediaUniDAW.Controllers
             catch (Exception e) {
                 return View(version);
             }
+        }
+
+        [NonAction]
+        void DeleteEmptyChaptersFromDataBase() {
+            var emptyChapters = from chapter in db.Chapters
+                                where chapter.Title == "None" && chapter.Content == "None"
+                                select chapter;
+
+            foreach (var emptyChapter in emptyChapters) {
+                db.Chapters.Remove(emptyChapter);
+            }
+
+            db.SaveChanges();
         }
     }
 }

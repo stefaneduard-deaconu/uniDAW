@@ -59,5 +59,20 @@ namespace WikipediaUniDAW.Models {
          */
 
         public IEnumerable<SelectListItem> Categories { get; set; }
+
+        /**
+         * Class Methods
+         */
+
+        public Chapter GetFirstChapter() {
+
+            Chapter[] chapters = CurrentVersion.Chapters.ToArray();
+
+            if (chapters.Length > 0) {
+                return chapters[0];
+            }
+
+            return null;
+        }
     }
 }

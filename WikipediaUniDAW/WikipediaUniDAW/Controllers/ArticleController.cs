@@ -41,7 +41,7 @@ namespace WikipediaUniDAW.Controllers
 
             // TODO: use ViewBag.IntroChapters array to store first chapter of each article to be displayed
 
-            return View();
+            return View(new Article());
         }
 
         /**
@@ -54,8 +54,11 @@ namespace WikipediaUniDAW.Controllers
          */
         [HttpGet]
         public ActionResult Show(int id) {
-            
-            return View();
+            Article article = (from art in db.Articles
+                              where art.ArticleId == id
+                              select art).ToArray()[0];
+
+            return View(article);
         }
 
         [HttpGet]
@@ -72,7 +75,6 @@ namespace WikipediaUniDAW.Controllers
         [HttpPost]
         [Authorize]
         public ActionResult New(Article article) {
-            //return RedirectToAction("Index", new { categoryId = article.CategoryId, sortingCriteria = 1 });
             article.Categories = GetAllCategories();
 
             try {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Security.Application;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -37,6 +38,7 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpPost]
+        [ValidateInput(false)]
         public ActionResult NewChapterForNewArticle(Chapter chapter) {
 
             try {
@@ -45,7 +47,7 @@ namespace WikipediaUniDAW.Controllers
 
                     if (TryUpdateModel(realChapter)) {
                         realChapter.Title = chapter.Title;
-                        realChapter.Content = chapter.Content;
+                        realChapter.Content = Sanitizer.GetSafeHtmlFragment(chapter.Content);
                         db.SaveChanges();
                     }
                     return RedirectToRoute("New version for new article", new { articleId = realChapter.Version.Article.ArticleId });

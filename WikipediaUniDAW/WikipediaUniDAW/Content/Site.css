@@ -34,3 +34,12 @@ textarea {
     width: 25%;
     min-width: 150px;
 }
+
+.truncate {
+    /* Required declarations: */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    /* Limit the text block to x lines */
+    -webkit-line-clamp: 3;
+}
