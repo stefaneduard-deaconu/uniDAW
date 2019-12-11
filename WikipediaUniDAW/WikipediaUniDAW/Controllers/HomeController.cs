@@ -7,7 +7,7 @@ using System.Web.Mvc;
 namespace WikipediaUniDAW.Controllers {
     public class HomeController : Controller {
         public ActionResult Index() {
-            return View();
+            return RedirectToRoute("Articles of category", new { categoryId = 1, sortingCriteria = 1 });
         }
 
         public ActionResult About() {

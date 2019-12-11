@@ -15,6 +15,10 @@ namespace WikipediaUniDAW.Controllers
         [HttpGet]
         public ActionResult Index(int categoryId, int sortingCriteria) {
 
+            if (TempData.ContainsKey("articleMessage")) {
+                ViewBag.articleMessage = TempData["articleMessage"].ToString();
+            }
+
             IOrderedQueryable<Article> articles;
             switch (sortingCriteria) {
                 // select articles sorted by title
@@ -54,6 +58,11 @@ namespace WikipediaUniDAW.Controllers
          */
         [HttpGet]
         public ActionResult Show(int id) {
+
+            if (TempData.ContainsKey("articleShowMessage")) {
+                ViewBag.articleShowMessage = TempData["articleShowMessage"].ToString();
+            }
+
             Article article = (from art in db.Articles
                               where art.ArticleId == id
                               select art).ToArray()[0];
@@ -89,6 +98,57 @@ namespace WikipediaUniDAW.Controllers
             catch (Exception e) {
                 return View(article);
             }
+        }
+
+        [HttpGet]
+        public ActionResult Edit(int id) {
+
+            Article article = db.Articles.Find(id);
+            article.Categories = GetAllCategories();
+
+            if ((article.CreatorUserId == User.Identity.GetUserId() || 
+                User.IsInRole("Moderator") || User.IsInRole("Administrator")) && !article.Frozen
+            ) {
+                return View(article);
+            } else {
+                TempData["articleShowMessage"] = "You are not allowed to edit this article's details!";
+                return RedirectToAction("Show", new { id = id });
+            }
+        }
+
+        [HttpPut]
+        public ActionResult Edit(int id, Article requestArticle) {
+            try {
+                if (ModelState.IsValid) {
+                    Article article = db.Articles.Find(id);
+                    if (TryUpdateModel(article)) {
+                        article.CategoryId = requestArticle.CategoryId;
+                        article.Title = requestArticle.Title;
+                        article.Protected = requestArticle.Protected;
+                        article.Frozen = requestArticle.Frozen;
+                        TempData["articleShowMessage"] = "The article details have been modified!";
+                        db.SaveChanges();
+                    }
+                    return RedirectToAction("Show", new { id = id });
+                } else {
+                    return View(requestArticle);
+                }
+            }
+            catch (Exception e) {
+                return View(requestArticle);
+            }
+        }
+
+        [HttpDelete]
+        public ActionResult Delete(int id) {
+
+            Article article= db.Articles.Find(id);
+            Category category = article.Category;
+            db.Articles.Remove(article);
+            TempData["articleMessage"] = "The article has been deleted!";
+            db.SaveChanges();
+
+            return RedirectToRoute("Articles of category", new { categoryId = category.CategoryId, sortingCriteria = 1 });
         }
 
         [NonAction]

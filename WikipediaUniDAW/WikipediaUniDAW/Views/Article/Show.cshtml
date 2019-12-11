@@ -3,19 +3,23 @@
     ViewBag.Title = Model.Title;
 }
 
+@if (TempData.ContainsKey("articleShowMessage")) {
+    <h3 class="alert alert-info text-center" role="alert">@ViewBag.articleShowMessage</h3>
+}
+
 <div class="row">
     <h1 class="text-center">@Model.Title</h1>
     @if (Model.Protected) {
-        <i class="glyphicon glyphicon-lock align-left"></i> 
+        <i class="glyphicon glyphicon-lock align-left"></i>
         <span class="align-left" style="margin: 0 20px 0 5px;">Protected &Tab;</span>
     }
     @if (Model.Frozen) {
-        <i class="glyphicon glyphicon-minus-sign align-left"></i> 
+        <i class="glyphicon glyphicon-minus-sign align-left"></i>
         <span class="align-left" style="margin: 0 20px 0 5px;">Frozen</span>
     }
     <form method="post" action="/Article/Delete/@Model.ArticleId" style="display: inline; float: right;">
         @Html.HttpMethodOverride(HttpVerbs.Delete)
-        <button class="btn btn-danger align-right" type="submit">Delete</button>
+        <button class="btn btn-danger align-right" type="submit">Delete Article</button>
     </form>
 
     <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Article/Edit/@Model.ArticleId"> Edit Details</a>
@@ -27,7 +31,11 @@
 <br />
 
 @foreach (var chapter in Model.CurrentVersion.Chapters) {
-    <h2>@chapter.Title</h2>
+    <h2>
+        @chapter.Title
+        <a class="btn btn-danger align-right" style="margin-right: 10px" href="/Chapter/Delete/@chapter.ChapterId">Delete</a>
+        <a class="btn btn-primary align-right" style="margin-right: 10px" href="/Chapter/Edit/@chapter.ChapterId">Edit</a>
+    </h2>
     <hr />
     <br />
     @Html.Raw(chapter.Content)

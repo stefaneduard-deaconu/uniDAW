@@ -4,7 +4,12 @@
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
-<br /><br />
+<br />
+
+@if (TempData.ContainsKey("articleMessage")) {
+    <h3 class="alert alert-info text-center" role="alert">@ViewBag.articleMessage</h3>
+    <br />
+}
 
 @foreach (var article in ViewBag.Articles) {
     <div class="row">

@@ -1,21 +1,22 @@
 ﻿@model WikipediaUniDAW.Models.Article
 @{
-    ViewBag.Title = "Article Creation";
+    ViewBag.Title = "Edit Article Details";
 }
 
 <h2>@ViewBag.Title</h2>
+<br />
 
-@using (Html.BeginForm(actionName: "New", controllerName: "Article")) {
+<form method="post" action="/Article/Edit/@Model.ArticleId">
+    @Html.HttpMethodOverride(HttpVerbs.Put)
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
+    @Html.Hidden("ArticleId")
     @Html.Hidden("CreatorUserId")
-
     @Html.Hidden("CurrentVersionId")
-
-    @Html.Hidden("CreationDate", DateTime.Now, new { @class = "form-control" })
+    @Html.Hidden("CreationDate", Model.CreationDate, new { @class = "form-control" })
 
     @Html.Label("Title", "Article Title")
-    @Html.TextBox("Title", "", new { @class = "form-control" })
+    @Html.TextBox("Title", Model.Title, new { @class = "form-control" })
     <br />
 
     <label>Choose a category</label>
@@ -23,13 +24,16 @@
         "Choose a category", new { @class = "form-control" })
     <br />
 
-    @Html.CheckBox("Protected", false)
+    @Html.CheckBox("Protected", Model.Protected)
     @Html.Label("Protected", "Article should be protected.")
     <br />
 
-    @Html.CheckBox("Frozen", false)
+    @Html.CheckBox("Frozen", Model.Frozen)
     @Html.Label("Frozen", "Article should be frozen.")
     <br /><br />
 
-    <button class="btn btn-primary" type="submit">Next Step</button>
-}
+    <button class="btn btn-sm btn-primary" type="submit">Save Details</button>
+</form>
+
+
+

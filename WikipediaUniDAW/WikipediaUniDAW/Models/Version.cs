@@ -21,13 +21,8 @@ namespace WikipediaUniDAW.Models {
         [ForeignKey("ModifierUser")]
         public string ModifierUserId { get; set; }
 
-        // nullable
         [ForeignKey("ChangedChapter")]
-        public int? ChangedChapterId { get; set; }
-
-        // nullable
-        [ForeignKey("ChangedImage")]
-        public int? ChangedImageId { get; set; }
+        public int? ChangedChapterId { get; set; }  // nullable
 
         public int VersionNo { get; set; }
 
@@ -49,11 +44,6 @@ namespace WikipediaUniDAW.Models {
         [InverseProperty("AffectedVersion")]
         public virtual Chapter ChangedChapter { get; set; }
 
-        [InverseProperty("AffectedVersion")]
-        public virtual Image ChangedImage { get; set; }
-
         public virtual ICollection<Chapter> Chapters { get; set; }
-
-        public virtual ICollection<Image> Images { get; set; }
     }
 }

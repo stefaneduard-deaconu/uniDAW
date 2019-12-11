@@ -189,7 +189,6 @@
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\Image.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Version.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -264,6 +263,7 @@
     <Content Include="Views\Version\NewVersionForNewArticle.cshtml" />
     <Content Include="Views\Chapter\NewChapterForNewArticle.cshtml" />
     <Content Include="Views\Chapter\EditChapterForNewArticle.cshtml" />
+    <Content Include="Views\Article\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

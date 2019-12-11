@@ -20,6 +20,8 @@ namespace WikipediaUniDAW.Controllers
         [HttpGet]
         public ActionResult NewVersionForNewArticle(int articleId) {
 
+            DeleteEmptyChaptersFromDataBase();
+
             if (TempData.ContainsKey("versionMessage")) {
                 ViewBag.versionMessage = TempData["versionMessage"].ToString();
             }
@@ -42,7 +44,6 @@ namespace WikipediaUniDAW.Controllers
                 Article = article,
                 ModifierUserId = User.Identity.GetUserId(),
                 ChangedChapterId = null,
-                ChangedImageId = null,
                 VersionNo = 1,
                 DescriptionChange = "Article Creation",
                 CurrentArticle = new Article[] { article },

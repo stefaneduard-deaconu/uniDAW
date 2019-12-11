@@ -54,7 +54,6 @@ namespace WikipediaUniDAW.Models {
 
         public virtual ICollection<Version> Versions { get; set; }
 
-        public string TestField { get; set; }
         /**
          * Other properties
          */
