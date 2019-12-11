@@ -43,3 +43,13 @@ textarea {
     /* Limit the text block to x lines */
     -webkit-line-clamp: 3;
 }
+
+.align-left {
+    display: inline;
+    float: left;
+}
+
+.align-right {
+    display: inline;
+    float: right;
+}

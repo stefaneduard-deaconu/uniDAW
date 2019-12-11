@@ -25,7 +25,7 @@
                 <a class="btn btn-primary" href="/Chapter/EditChapterForNewArticle/@chapter.ChapterId/@chapter.Version.Article.ArticleId">Edit</a>
             </div>
             <div class="col-md-1">
-                <form method="post" action="/Chapter/Delete/@chapter.ChapterId/@chapter.Version.Article.ArticleId" style="display: inline">
+                <form method="post" action="/Chapter/DeleteChapterForNewArticle/@chapter.ChapterId/@chapter.Version.Article.ArticleId" style="display: inline">
                     @Html.HttpMethodOverride(HttpVerbs.Delete)
                     <button class="btn btn-danger" type="submit">Delete</button>
                 </form>

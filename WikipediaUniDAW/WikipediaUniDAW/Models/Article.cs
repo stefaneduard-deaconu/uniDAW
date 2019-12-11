@@ -54,10 +54,12 @@ namespace WikipediaUniDAW.Models {
 
         public virtual ICollection<Version> Versions { get; set; }
 
+        public string TestField { get; set; }
         /**
          * Other properties
          */
 
+        // Categories used in article creation's dropdown
         public IEnumerable<SelectListItem> Categories { get; set; }
 
         /**
@@ -66,13 +68,17 @@ namespace WikipediaUniDAW.Models {
 
         public Chapter GetFirstChapter() {
 
+            if (CurrentVersion == null || CurrentVersion.Chapters == null) {
+                return new Chapter { Title = "None", Content = "None" };
+            }
+
             Chapter[] chapters = CurrentVersion.Chapters.ToArray();
 
             if (chapters.Length > 0) {
                 return chapters[0];
             }
 
-            return null;
+            return new Chapter { Title = "None", Content = "None" };
         }
     }
 }

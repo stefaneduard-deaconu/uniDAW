@@ -263,6 +263,7 @@
     <Content Include="Views\Article\New.cshtml" />
     <Content Include="Views\Version\NewVersionForNewArticle.cshtml" />
     <Content Include="Views\Chapter\NewChapterForNewArticle.cshtml" />
+    <Content Include="Views\Chapter\EditChapterForNewArticle.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

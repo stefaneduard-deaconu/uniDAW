@@ -3,7 +3,38 @@
     ViewBag.Title = Model.Title;
 }
 
-<h1>@Model.Title</h1>
+<div class="row">
+    <h1 class="text-center">@Model.Title</h1>
+    @if (Model.Protected) {
+        <i class="glyphicon glyphicon-lock align-left"></i> 
+        <span class="align-left" style="margin: 0 20px 0 5px;">Protected &Tab;</span>
+    }
+    @if (Model.Frozen) {
+        <i class="glyphicon glyphicon-minus-sign align-left"></i> 
+        <span class="align-left" style="margin: 0 20px 0 5px;">Frozen</span>
+    }
+    <form method="post" action="/Article/Delete/@Model.ArticleId" style="display: inline; float: right;">
+        @Html.HttpMethodOverride(HttpVerbs.Delete)
+        <button class="btn btn-danger align-right" type="submit">Delete</button>
+    </form>
+
+    <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Article/Edit/@Model.ArticleId"> Edit Details</a>
+    <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Version/Index/@Model.ArticleId"> Versions</a>
+    <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Chapter/New/@Model.ArticleId"> Add Chapter</a>
+
+    <div style="clear: both;"></div>
+</div>
+<br />
+
+@foreach (var chapter in Model.CurrentVersion.Chapters) {
+    <h2>@chapter.Title</h2>
+    <hr />
+    <br />
+    @Html.Raw(chapter.Content)
+
+    <br /><br />
+}
+
 <hr />
 
 

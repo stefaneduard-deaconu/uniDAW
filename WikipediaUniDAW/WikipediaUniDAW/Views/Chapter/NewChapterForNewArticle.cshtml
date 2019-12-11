@@ -8,6 +8,7 @@
 <h3>Chapter Creation</h3>
 
 @using (Html.BeginForm(actionName: "NewChapterForNewArticle", controllerName: "Chapter")) {
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
     @Html.HiddenFor(m => m.ChapterId)
     @Html.HiddenFor(m => m.VersionId)

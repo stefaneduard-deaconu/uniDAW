@@ -1,0 +1,27 @@
+﻿@model WikipediaUniDAW.Models.Chapter
+@{
+    ViewBag.Title = "Article Creation";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>Chapter Edit</h3>
+
+@using (Html.BeginForm(actionName: "EditChapterForNewArticle", controllerName: "Chapter")) {
+    @Html.HttpMethodOverride(HttpVerbs.Put)
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    @Html.HiddenFor(m => m.ChapterId)
+    @Html.HiddenFor(m => m.VersionId)
+
+    @Html.Label("Title", "Chapter Title")
+    @Html.TextBox("Title", Model.Title, new { @class = "form-control" })
+    <br />
+
+    @Html.Label("Content", "Chapter Content")
+    @Html.TextArea("Content", Model.Content, new { @class = "form-control summernote" })
+    <br />
+
+    <button class="btn btn-primary" type="submit">Modify Chapter</button>
+}
+

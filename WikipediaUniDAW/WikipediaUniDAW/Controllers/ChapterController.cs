@@ -47,8 +47,11 @@ namespace WikipediaUniDAW.Controllers
 
                     if (TryUpdateModel(realChapter)) {
                         realChapter.Title = chapter.Title;
-                        realChapter.Content = Sanitizer.GetSafeHtmlFragment(chapter.Content);
+                        realChapter.Content = chapter.Content;
+                        // using a Sanitizer may cause specific image urls not to save in the database
+                        //realChapter.Content = Sanitizer.GetSafeHtmlFragment(chapter.Content);
                         db.SaveChanges();
+                        TempData["versionMessage"] = "New chapter added!";
                     }
                     return RedirectToRoute("New version for new article", new { articleId = realChapter.Version.Article.ArticleId });
                 } else {
@@ -58,6 +61,51 @@ namespace WikipediaUniDAW.Controllers
             catch (Exception e) {
                 return View(chapter);
             }
+        }
+
+        [HttpGet]
+        public ActionResult EditChapterForNewArticle(int chapterId, int articleId) {
+
+            Chapter chapter = db.Chapters.Find(chapterId);
+
+            return View(chapter);
+        }
+
+        [HttpPut]
+        [ValidateInput(false)]
+        public ActionResult EditChapterForNewArticle(Chapter chapter) {
+
+            try {
+                if (ModelState.IsValid) {
+                    Chapter realChapter = db.Chapters.Find(chapter.ChapterId);
+
+                    if (TryUpdateModel(realChapter)) {
+                        realChapter.Title = chapter.Title;
+                        realChapter.Content = chapter.Content;
+                        // using a Sanitizer may cause specific image urls not to save in the database
+                        //realChapter.Content = Sanitizer.GetSafeHtmlFragment(chapter.Content);
+                        db.SaveChanges();
+                        TempData["versionMessage"] = "The chapter has been modified!";
+                    }
+                    return RedirectToRoute("New version for new article", new { articleId = realChapter.Version.Article.ArticleId });
+                } else {
+                    return View(chapter);
+                }
+            }
+            catch (Exception e) {
+                return View(chapter);
+            }
+        }
+
+        [HttpDelete]
+        public ActionResult DeleteChapterForNewArticle(int chapterId, int articleId) {
+
+            Chapter chapter = db.Chapters.Find(chapterId);
+            db.Chapters.Remove(chapter);
+            db.SaveChanges();
+            TempData["versionMessage"] = "The chapter has been deleted!";
+
+            return RedirectToRoute("New version for new article", new { articleId = articleId });
         }
     }
 }

@@ -20,6 +20,10 @@ namespace WikipediaUniDAW.Controllers
         [HttpGet]
         public ActionResult NewVersionForNewArticle(int articleId) {
 
+            if (TempData.ContainsKey("versionMessage")) {
+                ViewBag.versionMessage = TempData["versionMessage"].ToString();
+            }
+
             Models.Version[] foundVersion = (from ver in db.Versions
                                              where ver.ArticleId == articleId
                                              select ver).ToArray();
