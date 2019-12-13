@@ -1,4 +1,5 @@
-﻿using Microsoft.Security.Application;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.Security.Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,6 +62,133 @@ namespace WikipediaUniDAW.Controllers
             catch (Exception e) {
                 return View(chapter);
             }
+        }
+
+        [HttpGet]
+        public ActionResult NewChapterForExistingArticle(int articleId) {
+            Chapter chapter = new Chapter();
+
+            Article article = (from art in db.Articles
+                               where art.ArticleId == articleId
+                               select art).ToArray()[0];
+
+            chapter.Version = article.CurrentVersion;
+
+            //chapter.Version = (from version in db.Versions
+            //                  where (from art in version.CurrentArticle select art.ArticleId).ToArray().Contains(articleId)
+            //                  select version).ToArray()[0];
+            return View(chapter);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult NewChapterForExistingArticle(Chapter chapter) {
+
+            try {
+                if (ModelState.IsValid) {
+                    
+                    VersionController versionController = new VersionController();
+                    // get old entities
+                    Models.Version oldVersion = chapter.Version;
+
+                    Article article = (from art in db.Articles
+                                      where art.ArticleId == oldVersion.ArticleId
+                                      select art).ToArray()[0];
+                    
+                    Chapter[] chaptersOfOldVersion = (from chap in db.Chapters
+                                                         where chap.VersionId == oldVersion.VersionId
+                                                         select chap).ToArray();
+
+                    //Models.Version newVersion = versionController.NewVersionAtNewChapter(chapter);
+
+                    // remove old associations
+                    if (TryUpdateModel(article)) {
+                        article.CurrentVersionId = null;
+                        article.CurrentVersion = null;
+                        db.SaveChanges();
+                    }
+
+                    if (TryUpdateModel(oldVersion)) {
+                        oldVersion.CurrentArticle = null;
+                    }
+
+                    // create new entities
+                    Models.Version newVersion = new Models.Version {
+                        ArticleId = article.ArticleId,
+                        ModifierUserId = User.Identity.GetUserId(),
+                        VersionNo = oldVersion.VersionNo + 1,
+                        DateChange = DateTime.Now,
+                        DescriptionChange = "Added chapter '" + chapter.Title + "'.",
+                        CurrentArticle = new Article[] { article },
+                    };
+
+                    db.Versions.Add(newVersion);
+                    db.SaveChanges();
+
+                    if (TryUpdateModel(article)) {
+                        article.CurrentVersion = newVersion;
+                        db.SaveChanges();
+                    }
+
+                    // create chapters for new version
+                    foreach (Chapter chapterOfOldVersion in chaptersOfOldVersion) {
+                        db.Chapters.Add(new Chapter {
+                            VersionId = newVersion.VersionId,
+                            Title = chapterOfOldVersion.Title,
+                            Content = chapterOfOldVersion.Content
+                        });
+                        db.SaveChanges();
+                    }
+
+                    Chapter newChapter = new Chapter {
+                        VersionId = newVersion.VersionId,
+                        Title = chapter.Title,
+                        Content = chapter.Content,
+                        AffectedVersion = new Models.Version[] { newVersion }
+                    };
+                    db.Chapters.Add(newChapter);
+                    db.SaveChanges();
+
+                    /*
+                    
+
+                    if (TryUpdateModel(newVersion)) {
+                        newVersion.ChangedChapterId = newChapter.ChapterId;
+                        newVersion.CurrentArticle = new Article[] { oldVersion.Article };
+                        db.SaveChanges();
+                        TempData["articleMessage"] = "New chapter has been added.";
+                    }
+
+                    Article article = newVersion.Article = (from art in db.Articles
+                                                            where art.ArticleId == newVersion.ArticleId
+                                                            select art).ToArray()[0];
+                    if (TryUpdateModel(oldVersion)) {
+                        article.CurrentVersion = null;
+                        oldVersion.CurrentArticle = null;
+                        db.SaveChanges();
+                    }
+
+                    if (TryUpdateModel(newChapter)) {
+                        newChapter.AffectedVersion = new Models.Version[] { newVersion };
+                        db.SaveChanges();
+                    }
+
+                    if (TryUpdateModel(article)) {
+                        article.CurrentVersionId = newVersion.VersionId;
+                        db.SaveChanges();
+                    }
+                    */
+
+                    return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = article.ArticleId });
+                } else {
+                    return View(chapter);
+                }
+            }
+            catch (Exception e) {
+                return View(chapter);
+            }
+
+            
         }
 
         [HttpGet]

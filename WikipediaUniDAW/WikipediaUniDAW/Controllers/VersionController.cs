@@ -86,7 +86,8 @@ namespace WikipediaUniDAW.Controllers
                         realVersion.DateChange = DateTime.Now;
                         db.SaveChanges();
                     }
-                    
+
+                    TempData["articleMessage"] = "New article has been created.";
                     return RedirectToRoute("Articles of category", new { categoryId = realVersion.Article.CategoryId, sortingCriteria = 1 });
                 } else {
                     return View(version);
@@ -98,7 +99,7 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [NonAction]
-        void DeleteEmptyChaptersFromDataBase() {
+        public void DeleteEmptyChaptersFromDataBase() {
             var emptyChapters = from chapter in db.Chapters
                                 where chapter.Title == "None" && chapter.Content == "None"
                                 select chapter;
@@ -108,6 +109,23 @@ namespace WikipediaUniDAW.Controllers
             }
 
             db.SaveChanges();
+        }
+
+        [NonAction]
+        public Models.Version NewVersionAtNewChapter(Chapter tempChapter) {
+
+            Models.Version version = new Models.Version {
+                ArticleId = tempChapter.Version.ArticleId,
+                ModifierUserId = tempChapter.Version.ModifierUserId,
+                VersionNo = tempChapter.Version.VersionNo + 1,
+                DateChange = DateTime.Now,
+                DescriptionChange = "Added chapter '" + tempChapter.Title + "'."
+            };
+
+            db.Versions.Add(version);
+            db.SaveChanges();
+
+            return version;
         }
     }
 }

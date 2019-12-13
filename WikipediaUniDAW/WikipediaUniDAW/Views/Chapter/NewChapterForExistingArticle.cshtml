@@ -1,0 +1,28 @@
+﻿@model WikipediaUniDAW.Models.Chapter
+@{
+    ViewBag.Title = "Article Edit";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>Chapter Creation</h3>
+
+@*@using (Html.BeginForm(actionName: "NewChapterForExistingArticle", controllerName: "Chapter", 
+    method: FormMethod.Post, routeValues: new { articleId = Model.Version.ArticleId})) {*@
+<form method="post" action="Chapter/NewChapterForExistingArticle/@Model">
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    @Html.HiddenFor(m => m.Version.ArticleId)
+
+    @Html.Label("Title", "Chapter Title")
+    @Html.TextBox("Title", "", new { @class = "form-control" })
+    <br />
+
+    @Html.Label("Content", "Chapter Content")
+    @Html.TextArea("Content", "", new { @class = "form-control summernote" })
+    <br />
+
+    <button class="btn btn-primary" type="submit">Add Chapter</button>
+</form>
+@*}*@
+

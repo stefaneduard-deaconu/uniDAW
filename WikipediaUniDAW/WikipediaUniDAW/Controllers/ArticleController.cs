@@ -106,8 +106,9 @@ namespace WikipediaUniDAW.Controllers
             Article article = db.Articles.Find(id);
             article.Categories = GetAllCategories();
 
-            if ((article.CreatorUserId == User.Identity.GetUserId() || 
-                User.IsInRole("Moderator") || User.IsInRole("Administrator")) && !article.Frozen
+            if (User.IsInRole("Administrator") ||
+                    (article.CreatorUserId == User.Identity.GetUserId() || User.IsInRole("Moderator")) && 
+                    (!article.Frozen )
             ) {
                 return View(article);
             } else {
