@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model WikipediaUniDAW.Models.Article
+
+<h1>All the articles under the "@ViewBag.CategoryName" Category:</h1>
+
+@if (ViewBag.hasArticles)
+{
+    foreach (WikipediaUniDAW.Models.Article article in ViewBag.Articles)
+    {
+        <div>
+            article.Title
+        </div>
+    }
+}
+else
+{
+
+}
+

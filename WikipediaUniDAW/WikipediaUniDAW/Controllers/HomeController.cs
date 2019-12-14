@@ -46,6 +46,11 @@ namespace WikipediaUniDAW.Controllers {
             order.Add("descending", true);
             ViewBag.Order = order;
 
+            //TODO for now we search for them in the database, but later we include virtually in the article
+            ViewBag.Categories = from category in db.Categories
+                                      orderby category.Name
+                                      select category;
+
             return View();
         }
 
@@ -57,6 +62,32 @@ namespace WikipediaUniDAW.Controllers {
         }
 
 
+        public ActionResult Category(int categoryId = 0)
+        {
+            ViewBag.Message = "Articles from category";
+
+            if (categoryId == 0)
+                return RedirectToRoute("HomeCategory");
+           
+            ViewBag.Articles = from article in db.Articles
+                               orderby article.Title
+                               where article.CategoryId == categoryId
+                               select article;
+            // TODO, find the way of checking if there are any articles:
+            ViewBag.hasArticles = true;
+            //if (ViewBag.Articles.ToArray().GetLength() > 0)
+            //    ViewBag.hasArticles = true;
+            //else
+            //    ViewBag.hasArticles = false;
+
+            ViewBag.CategoryId = categoryId;
+            var categories = from category in db.Categories
+                             where category.CategoryId == categoryId
+                             select category;
+            ViewBag.CategoryName = categories.ToArray()[0].Name;
+           
+            return View();
+        }
 
         public ActionResult About() {
             ViewBag.Message = "Your application description page.";
