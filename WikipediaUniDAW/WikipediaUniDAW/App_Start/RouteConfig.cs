@@ -11,6 +11,16 @@ namespace WikipediaUniDAW {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "Home",
+                url: "{sort}/{desc}",
+                defaults: new { controller = "Home", action = "Index",
+                                sort = UrlParameter.Optional,
+                                desc = UrlParameter.Optional
+                }
+            );
+            //routes.MapRoute(
+            //    );
+            routes.MapRoute(
                 name: "Articles of category",
                 url: "Article/Index/{categoryId}/{sortingCriteria}",
                 defaults: new { controller = "Article", action = "Index" }

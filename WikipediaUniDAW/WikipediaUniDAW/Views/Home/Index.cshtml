@@ -1,31 +1,62 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model WikipediaUniDAW.Models.Article
+
+@{
+    ViewBag.Title = "Wiki 2.0.0";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<h1 class="center-block">@ViewBag.Title</h1>
+<header class="center-block">Welcome to Wiki 2.0, the new cradle of knowledge</header>
+<br />
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+<section id="articles">
+    <header>
+        <h2>Take a look:</h2>
+    </header>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <form method ="post" action="Show">
+                <text>Sort our articles by</text>
+                <select name="sort">
+                    @foreach (var sort in ViewBag.Sorts)
+                    {
+                        <option value=@sort.Value>@sort.Key</option>
+                    }
+                </select>
+                <select name="order">
+                    @foreach (var order in ViewBag.Order)
+                    {
+                        <option value=@order.Value>@order.Key</option>
+                    }
+                </select>
+                <button type="submit">Load results!</button>
+            <form />
+        <div/>
+    <div/>
+        @foreach (WikipediaUniDAW.Models.Article article in ViewBag.articles)
+        {
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"> @article.Title </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="truncate">
+                                <div>
+                                    @Html.Raw(article.GetFirstChapter().Content)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-footer">
+                            <a class="btn btn-primary" href="/Article/Show/@article.ArticleId"> Show Article </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+</section>
+
+
+

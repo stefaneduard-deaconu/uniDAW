@@ -12,6 +12,8 @@ namespace WikipediaUniDAW.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        public IEnumerable<SelectListItem> Categories { get; set; } // just in case we use this
+
         [HttpGet]
         public ActionResult Index(int categoryId, int sortingCriteria) {
 
