@@ -24,13 +24,13 @@ namespace WikipediaUniDAW {
             );
             routes.MapRoute(
                 name: "Home",
-                url: "{sort}/{desc}",
+                url: "Home/{sort}/{order}",
                 defaults: new
                 {
                     controller = "Home",
                     action = "Index",
                     sort = UrlParameter.Optional,
-                    desc = UrlParameter.Optional
+                    order = UrlParameter.Optional
                 }
             );
             
@@ -38,7 +38,7 @@ namespace WikipediaUniDAW {
             
 
 
-
+            // acum vad si eu ca erau implementate :D facepalm ;D
             routes.MapRoute(
                 name: "Articles of category",
                 url: "Article/Index/{categoryId}/{sortingCriteria}",

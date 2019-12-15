@@ -11,40 +11,37 @@ namespace WikipediaUniDAW.Controllers {
 
         private ApplicationDbContext db = new ApplicationDbContext();
         
-        public ActionResult Index(int sort = 0, bool desc = false) {
-            IOrderedQueryable<Article> articles = null;
+        public ActionResult Index(int sort = 0, int order = 0) {
             ViewBag.Message = "Homepage";
 
-            if (articles == null)
-                articles = from article in db.Articles
-                           orderby article.Title
+            var articles = from article in db.Articles
                            select article;
             switch(sort)
             {
-                case 1: // sort by title
+                case 0: // sort by title
                     articles = articles.OrderBy(a => a.Title);
                     break;
-                case 2: // sort by date created
+                case 1: // sort by date created
                     articles = articles.OrderBy(a => a.CreationDate);
                     break;
             }
             // it only happens when the argument is "true" (url)
-            if (desc)
+            if (order == 1)
                 articles.Reverse();
 
             ViewBag.Articles = articles;
-            ViewBag.Sort = sort;
-            ViewBag.Desc = desc;
+            //ViewBag.Sort = sort;
+            //ViewBag.Order = order;
 
             var sorts = new Dictionary<string, int>();
-            sorts.Add("Title", 1);
-            sorts.Add("Date Created", 2);
+            sorts.Add("Title", 0);
+            sorts.Add("Date Created", 1);
             ViewBag.Sorts = sorts;
 
-            var order = new Dictionary<string, bool>();
-            order.Add("ascending", false);
-            order.Add("descending", true);
-            ViewBag.Order = order;
+            var orders = new Dictionary<string, string>();
+            orders.Add("ascending", "0");
+            orders.Add("descending", "1");
+            ViewBag.Orders = orders;
 
             //TODO for now we search for them in the database, but later we include virtually in the article
             ViewBag.Categories = from category in db.Categories
@@ -55,10 +52,10 @@ namespace WikipediaUniDAW.Controllers {
         }
 
         [HttpPost]
-        public ActionResult Show(int sort, bool order)
+        public ActionResult Index(string sort, string order)
         {
-            ViewBag.Message = "Homepage";
-            return RedirectToAction("Index", new { Sort = sort, Order = order });
+            ViewBag.Message = "Homepage redirect after sort";
+            return RedirectToRoute("Home/" + sort + "/" + order);
         }
 
 
@@ -68,7 +65,7 @@ namespace WikipediaUniDAW.Controllers {
 
             if (categoryId == 0)
                 return RedirectToRoute("HomeCategory");
-           
+
             ViewBag.Articles = from article in db.Articles
                                orderby article.Title
                                where article.CategoryId == categoryId
@@ -85,18 +82,6 @@ namespace WikipediaUniDAW.Controllers {
                              where category.CategoryId == categoryId
                              select category;
             ViewBag.CategoryName = categories.ToArray()[0].Name;
-           
-            return View();
-        }
-
-        public ActionResult About() {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact() {
-            ViewBag.Message = "Your contact page.";
 
             return View();
         }

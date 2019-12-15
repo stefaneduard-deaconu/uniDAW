@@ -6,19 +6,38 @@
 
 @model WikipediaUniDAW.Models.Article
 
-<h1>All the articles under the "@ViewBag.CategoryName" Category:</h1>
+<h1 class="text-center"
+        style="margin-top: 30px; margin-bottom: 50px"
+    >Articles under the "@ViewBag.CategoryName" Category:</h1>
 
-@if (ViewBag.hasArticles)
+@if (true)
 {
-    foreach (WikipediaUniDAW.Models.Article article in ViewBag.Articles)
-    {
-        <div>
-            article.Title
-        </div>
-    }
+    <div class="row">
+        @foreach (WikipediaUniDAW.Models.Article article in ViewBag.Articles)
+        {
+            <div class="col-md-10 col-md-offset-1">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"> @article.Title </h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="truncate">
+                            <div>
+                                @Html.Raw(article.GetFirstChapter().Content)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <a class="btn btn-primary" href="/Article/Show/@article.ArticleId"> Show Article </a>
+                    </div>
+                </div>
+            </div>
+            <br />
+        }
+    </div>
 }
 else
 {
-
+    <text>How did you get here?</text>
 }
 
