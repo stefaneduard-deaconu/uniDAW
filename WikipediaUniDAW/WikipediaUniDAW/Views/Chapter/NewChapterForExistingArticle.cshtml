@@ -7,12 +7,13 @@
 
 <h3>Chapter Creation</h3>
 
-@*@using (Html.BeginForm(actionName: "NewChapterForExistingArticle", controllerName: "Chapter", 
-    method: FormMethod.Post, routeValues: new { articleId = Model.Version.ArticleId})) {*@
-<form method="post" action="Chapter/NewChapterForExistingArticle/@Model">
+@using (Html.BeginForm(actionName: "NewChapterForExistingArticle", controllerName: "Chapter", 
+    method: FormMethod.Post, routeValues: new { articleId = Model.Version.ArticleId}))
+{
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
     @Html.HiddenFor(m => m.Version.ArticleId)
+    @Html.HiddenFor(m => m.VersionId)
 
     @Html.Label("Title", "Chapter Title")
     @Html.TextBox("Title", "", new { @class = "form-control" })
@@ -23,6 +24,5 @@
     <br />
 
     <button class="btn btn-primary" type="submit">Add Chapter</button>
-</form>
-@*}*@
+}
 

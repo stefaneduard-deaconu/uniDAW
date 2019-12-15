@@ -110,22 +110,5 @@ namespace WikipediaUniDAW.Controllers
 
             db.SaveChanges();
         }
-
-        [NonAction]
-        public Models.Version NewVersionAtNewChapter(Chapter tempChapter) {
-
-            Models.Version version = new Models.Version {
-                ArticleId = tempChapter.Version.ArticleId,
-                ModifierUserId = tempChapter.Version.ModifierUserId,
-                VersionNo = tempChapter.Version.VersionNo + 1,
-                DateChange = DateTime.Now,
-                DescriptionChange = "Added chapter '" + tempChapter.Title + "'."
-            };
-
-            db.Versions.Add(version);
-            db.SaveChanges();
-
-            return version;
-        }
     }
 }
