@@ -51,6 +51,7 @@ namespace WikipediaUniDAW.Controllers {
             return View();
         }
 
+        // TODO make this work out, as to sort the items :(
         [HttpPost]
         public ActionResult Index(string sort, string order)
         {
@@ -81,7 +82,20 @@ namespace WikipediaUniDAW.Controllers {
             var categories = from category in db.Categories
                              where category.CategoryId == categoryId
                              select category;
-            ViewBag.CategoryName = categories.ToArray()[0].Name;
+            if (categories.Count() > 0)
+            {
+                ViewBag.CategoryName = categories.ToArray()[0].Name;
+                ViewBag.isCategoryId = true;
+            }
+            else // TODO, this isn't used in the View, yet
+                ViewBag.isCategoryId = false;
+
+            return View();
+        }
+
+        public ActionResult Search(string queryString)
+        {
+            ViewBag.Query = queryString;
 
             return View();
         }
