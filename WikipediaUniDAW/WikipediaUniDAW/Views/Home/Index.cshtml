@@ -5,18 +5,30 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div id="glyph-div" 
-     class="" style="position: fixed; z-index: 0; top: 60px; right: 25px;
+<form id="glyph-div" action="/Home/Search" onsubmit="return (function () { $('#search-submit').click(); return false;})()"
+      class="" style="position: fixed; z-index: 0; top: 60px; right: 25px;
          height: 50px; width: 50px; background: whitesmoke;
          border-radius: 100px"
-     onmouseenter="$('#glyph-div').animate({ width: '200px' }); $('input[type=text]').removeClass('hidden');"
-     @*onmouseout="$('#glyph-div').animate({ width: '50px' }); $('input[type=text]').addClass('hidden');"*@>
-    <input class="hidden" type="text" name="search" value="find articles.."
-           style=" width: calc(100% - 75px); float: left; height: 36px; margin: 7px 0px; margin-left: 18px;
-                    text-align: center"/>
+      onmouseenter="$('#glyph-div').animate({ width: '200px' }); $('input[type=text]').removeClass('hidden');"
+      @*onmouseout="$('#glyph-div').animate({ width: '50px' }); $('input[type=text]').addClass('hidden');"*@>
+    <input class="hidden" type="text" name="q" value="find articles"
+           style="width: calc(100% - 75px); float: left; height: 36px; margin: 7px 0px; margin-left: 18px;
+                    text-align: center" />
     <i class="glyphicon glyphicon-search" style="font-size: 36px; position: relative; margin: 7px"
-            onclick=""></i>
-</div>
+       onclick="$('#search-submit').click()"></i>
+    <button id="search-submit" type="submit" hidden
+            onclick="let url = `/Home/Search/${$('#glyph-div>input').val()}`; console.log(url); window.location.replace(url);">
+        This remains hidden :D.
+    </button>
+    <a id="search-redirect-anchor" href="" class="hidden">Redirect to the right uri</a>
+    @*<button id="search-submit" type="submit" hidden
+                onclick="let url = '/Home/Search/'; $(`<a href='${url + $('#glyph-div>input').val()}'></a>`).click();">
+            This remains hidden :D.
+        </button>*@
+
+    @*onclick="let query = $('#glyph-div>a').get(0).href; $('#search-redirect-anchor').attr('href', '/Home/Search/' + query); $('#search-redirect-anchor').click()"></i>*@
+
+</form>
 
 <div class="dropdown col-md-2 center-block"
         style="margin-top: 10px;">

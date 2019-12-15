@@ -23,6 +23,16 @@ namespace WikipediaUniDAW {
                 }
             );
             routes.MapRoute(
+                name: "HomeSearch",
+                url: "Home/Search/{queryString}",
+                defaults: new
+                {
+                    controller = "Home",
+                    action = "Search",
+                    categoryId = UrlParameter.Optional
+                }
+            );
+            routes.MapRoute(
                 name: "Home",
                 url: "Home/{sort}/{order}",
                 defaults: new
