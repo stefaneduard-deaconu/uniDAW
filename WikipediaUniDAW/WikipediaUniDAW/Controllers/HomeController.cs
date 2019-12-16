@@ -97,6 +97,30 @@ namespace WikipediaUniDAW.Controllers {
         {
             ViewBag.Query = queryString;
 
+            var articles = (from article in db.Articles
+                            select article).ToArray();
+
+            var relatedWords = new List<string>();
+
+            var goodArticles = new List<Article>();
+
+            foreach (Article article in articles)
+            {
+                bool queryRelated = false;
+                foreach (string word in article.Title.Split())
+                {
+                    if (queryString.Contains(word))
+                    {
+                        queryRelated = true;
+                        relatedWords.Add(word);
+                    }
+                }
+                if (queryRelated)
+                    goodArticles.Add(article);
+            }
+
+            ViewBag.Articles = goodArticles;
+            ViewBag.Words = relatedWords;
             return View();
         }
     }
