@@ -33,8 +33,12 @@
 @foreach (var chapter in Model.CurrentVersion.Chapters) {
     <h2>
         @chapter.Title
-        <a class="btn btn-danger align-right" style="margin-right: 10px" href="/Chapter/Delete/@chapter.ChapterId">Delete</a>
-        <a class="btn btn-primary align-right" style="margin-right: 10px" href="/Chapter/Edit/@chapter.ChapterId">Edit</a>
+        <form method="post" action="/Chapter/DeleteChapterForExistingArticle/@chapter.ChapterId" style="display: inline; float: right; margin-right: 10px">
+            @Html.HttpMethodOverride(HttpVerbs.Delete)
+            <button class="btn btn-danger align-right" type="submit"> Remove </button>
+        </form>
+        @*<a class="btn btn-danger align-right" style="margin-right: 10px" href="">Delete</a>*@
+        <a class="btn btn-primary align-right" style="margin-right: 10px" href="/Chapter/EditChapterForExistingArticle/@chapter.ChapterId">Edit</a>
     </h2>
     <hr />
     <br />
