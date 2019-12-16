@@ -73,6 +73,9 @@ namespace WikipediaUniDAW.Controllers
                                select art).ToArray()[0];
 
             chapter.Version = article.CurrentVersion;
+            chapter.VersionId = article.CurrentVersion.VersionId;
+
+            //ViewBag.ArticleId = article.ArticleId;
 
             //chapter.Version = (from version in db.Versions
             //                  where (from art in version.CurrentArticle select art.ArticleId).ToArray().Contains(articleId)
@@ -87,30 +90,24 @@ namespace WikipediaUniDAW.Controllers
             try {
                 if (ModelState.IsValid) {
                     
-                    VersionController versionController = new VersionController();
                     // get old entities
-                    Models.Version oldVersion = chapter.Version;
+                    Models.Version oldVersion = (from ver in db.Versions
+                                                 where ver.VersionId == chapter.VersionId
+                                                 select ver).ToArray()[0];
 
                     Article article = (from art in db.Articles
-                                      where art.ArticleId == oldVersion.ArticleId
-                                      select art).ToArray()[0];
+                                       where art.ArticleId == oldVersion.ArticleId
+                                       select art).ToArray()[0];
                     
                     Chapter[] chaptersOfOldVersion = (from chap in db.Chapters
-                                                         where chap.VersionId == oldVersion.VersionId
-                                                         select chap).ToArray();
-
-                    //Models.Version newVersion = versionController.NewVersionAtNewChapter(chapter);
+                                                      where chap.VersionId == oldVersion.VersionId
+                                                      select chap).ToArray();
 
                     // remove old associations
-                    if (TryUpdateModel(article)) {
-                        article.CurrentVersionId = null;
-                        article.CurrentVersion = null;
-                        db.SaveChanges();
-                    }
-
-                    if (TryUpdateModel(oldVersion)) {
-                        oldVersion.CurrentArticle = null;
-                    }
+                    article.CurrentVersionId = null;
+                    article.CurrentVersion = null;
+                    oldVersion.CurrentArticle = null;
+                    db.SaveChanges();
 
                     // create new entities
                     Models.Version newVersion = new Models.Version {
@@ -118,17 +115,15 @@ namespace WikipediaUniDAW.Controllers
                         ModifierUserId = User.Identity.GetUserId(),
                         VersionNo = oldVersion.VersionNo + 1,
                         DateChange = DateTime.Now,
-                        DescriptionChange = "Added chapter '" + chapter.Title + "'.",
+                        DescriptionChange = "Added chapter '" + chapter.Title + "'",
                         CurrentArticle = new Article[] { article },
                     };
 
                     db.Versions.Add(newVersion);
                     db.SaveChanges();
 
-                    if (TryUpdateModel(article)) {
-                        article.CurrentVersion = newVersion;
-                        db.SaveChanges();
-                    }
+                    article.CurrentVersion = newVersion;
+                    db.SaveChanges();
 
                     // create chapters for new version
                     foreach (Chapter chapterOfOldVersion in chaptersOfOldVersion) {
@@ -149,35 +144,7 @@ namespace WikipediaUniDAW.Controllers
                     db.Chapters.Add(newChapter);
                     db.SaveChanges();
 
-                    /*
-                    
-
-                    if (TryUpdateModel(newVersion)) {
-                        newVersion.ChangedChapterId = newChapter.ChapterId;
-                        newVersion.CurrentArticle = new Article[] { oldVersion.Article };
-                        db.SaveChanges();
-                        TempData["articleMessage"] = "New chapter has been added.";
-                    }
-
-                    Article article = newVersion.Article = (from art in db.Articles
-                                                            where art.ArticleId == newVersion.ArticleId
-                                                            select art).ToArray()[0];
-                    if (TryUpdateModel(oldVersion)) {
-                        article.CurrentVersion = null;
-                        oldVersion.CurrentArticle = null;
-                        db.SaveChanges();
-                    }
-
-                    if (TryUpdateModel(newChapter)) {
-                        newChapter.AffectedVersion = new Models.Version[] { newVersion };
-                        db.SaveChanges();
-                    }
-
-                    if (TryUpdateModel(article)) {
-                        article.CurrentVersionId = newVersion.VersionId;
-                        db.SaveChanges();
-                    }
-                    */
+                    TempData["articleShowMessage"] = "New chapter has been added.";
 
                     return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = article.ArticleId });
                 } else {
@@ -225,15 +192,168 @@ namespace WikipediaUniDAW.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult EditChapterForExistingArticle(int id) {
+            Chapter chapter = db.Chapters.Find(id);
+
+            ViewBag.DescriptionChange = "";
+
+            return View(chapter);
+        }
+
+        [HttpPut]
+        [ValidateInput(false)]
+        public ActionResult EditChapterForExistingArticle(Chapter chapter, string descriptionChange) {
+
+            try {
+                if (!ModelState.IsValid) {
+                    return View(chapter);
+                }
+
+                Models.Version oldVersion = (from ver in db.Versions
+                                             where ver.VersionId == chapter.VersionId
+                                             select ver).ToArray()[0];
+                Article article = oldVersion.Article;
+                Chapter[] chaptersOfOldVersion = oldVersion.Chapters.ToArray();
+
+                // remove old associations
+                article.CurrentVersionId = null;
+                article.CurrentVersion = null;
+                oldVersion.CurrentArticle = null;
+                db.SaveChanges();
+
+                // create new version
+                Models.Version newVersion = new Models.Version {
+                    ArticleId = article.ArticleId,
+                    ModifierUserId = User.Identity.GetUserId(),
+                    VersionNo = oldVersion.VersionNo + 1,
+                    DateChange = DateTime.Now,
+                    DescriptionChange = descriptionChange,
+                    CurrentArticle = new Article[] { article },
+                };
+
+                db.Versions.Add(newVersion);
+                db.SaveChanges();
+
+                article.CurrentVersion = newVersion;
+                db.SaveChanges();
+
+                // copy all the chapters of the old version into the new version, editing the needed one
+                foreach (Chapter chapterOfOldVersion in chaptersOfOldVersion) {
+
+                    if (chapterOfOldVersion.ChapterId == chapter.ChapterId) {
+                        db.Chapters.Add(new Chapter {
+                            VersionId = newVersion.VersionId,
+                            Title = chapter.Title,
+                            Content = chapter.Content
+                        });
+                        db.SaveChanges();
+                        continue;
+                    }
+
+                    db.Chapters.Add(new Chapter {
+                        VersionId = newVersion.VersionId,
+                        Title = chapterOfOldVersion.Title,
+                        Content = chapterOfOldVersion.Content
+                    });
+                    db.SaveChanges();
+                }
+
+                TempData["articleShowMessage"] = "The chapter has been modified.";
+
+                newVersion.ChangedChapterId = chapter.ChapterId;
+                db.SaveChanges();
+
+                if (TryUpdateModel(chapter)) {
+                    chapter.AffectedVersion = new Models.Version[] { newVersion };
+                    db.SaveChanges();
+                }
+
+                return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = article.ArticleId });
+
+            } catch (Exception e) {
+                return View(chapter);
+            }
+        }
+
         [HttpDelete]
         public ActionResult DeleteChapterForNewArticle(int chapterId, int articleId) {
 
             Chapter chapter = db.Chapters.Find(chapterId);
             db.Chapters.Remove(chapter);
             db.SaveChanges();
-            TempData["versionMessage"] = "The chapter has been deleted!";
+            TempData["versionMessage"] = "The chapter has been removed.";
 
             return RedirectToRoute("New version for new article", new { articleId = articleId });
+        }
+
+        [HttpDelete]
+        public ActionResult DeleteChapterForExistingArticle(int id) {
+
+            Chapter chapterToDelete = db.Chapters.Find(id);
+            Models.Version oldVersion = chapterToDelete.Version;
+            Article article = oldVersion.Article;
+            Chapter[] chaptersOfOldVersion = oldVersion.Chapters.ToArray();
+
+            // remove old associations
+            article.CurrentVersionId = null;
+            article.CurrentVersion = null;
+            oldVersion.CurrentArticle = null;
+            db.SaveChanges();
+
+            // create new version
+            Models.Version newVersion = new Models.Version {
+                ArticleId = article.ArticleId,
+                ModifierUserId = User.Identity.GetUserId(),
+                VersionNo = oldVersion.VersionNo + 1,
+                DateChange = DateTime.Now,
+                DescriptionChange = "Removed chapter '" + chapterToDelete.Title + "'",
+                CurrentArticle = new Article[] { article },
+            };
+
+            db.Versions.Add(newVersion);
+            db.SaveChanges();
+
+            article.CurrentVersion = newVersion;
+            db.SaveChanges();
+
+            // copy all the chapters of the old version, excepting the one to delete, into the new version
+            foreach (Chapter chapterOfOldVersion in chaptersOfOldVersion) {
+
+                if (chapterOfOldVersion.ChapterId == chapterToDelete.ChapterId) {
+                    continue;
+                }
+
+                db.Chapters.Add(new Chapter {
+                    VersionId = newVersion.VersionId,
+                    Title = chapterOfOldVersion.Title,
+                    Content = chapterOfOldVersion.Content
+                });
+                db.SaveChanges();
+            }
+
+            newVersion.ChangedChapterId = chapterToDelete.ChapterId;
+            newVersion.ChangedChapter = chapterToDelete;
+            db.SaveChanges();
+
+            TempData["articleShowMessage"] = "The chapter has been removed.";
+
+            return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = article.ArticleId });
+        }
+
+        [NonAction]
+        private void CopyChaptersFromOldVersionToNewVersion(Models.Version oldVersion, Models.Version newVersion) {
+
+            Chapter[] chaptersOfOldVersion = oldVersion.Chapters.ToArray();
+
+            foreach (Chapter chapterOfOldVersion in chaptersOfOldVersion) {
+                db.Chapters.Add(new Chapter {
+                    VersionId = newVersion.VersionId,
+                    Title = chapterOfOldVersion.Title,
+                    Content = chapterOfOldVersion.Content
+                });
+                db.SaveChanges();
+            }
         }
     }
 }
