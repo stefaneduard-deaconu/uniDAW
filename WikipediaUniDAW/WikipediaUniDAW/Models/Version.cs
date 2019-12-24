@@ -28,7 +28,6 @@ namespace WikipediaUniDAW.Models {
 
         public DateTime? DateChange { get; set; }
 
-        [Required(ErrorMessage = "Description is required!")]
         public string DescriptionChange { get; set; }
 
         /**

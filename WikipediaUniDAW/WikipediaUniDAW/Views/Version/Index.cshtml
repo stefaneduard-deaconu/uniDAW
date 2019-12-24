@@ -45,9 +45,13 @@
                 </div>
                 @if (version.VersionId != ViewBag.Article.CurrentVersionId) {
                     <div class="panel-footer">
-                        <a class="btn btn-primary" href="/Version/Revert/@version.VersionId">
-                            Revert to here <i class="glyphicon glyphicon-share-alt"></i>
-                        </a>
+                        <form method="post" action="/Version/Revert/@version.VersionId">
+                            @Html.HttpMethodOverride(HttpVerbs.Put)
+                            <button class="btn btn-primary" type="submit">
+                                <i class="glyphicon glyphicon-share-alt"></i>
+                                Revert to this version
+                            </button>
+                        </form>
                     </div>
                 }
             </div>

@@ -110,6 +110,42 @@ namespace WikipediaUniDAW.Controllers
             }
         }
 
+        [HttpPut]
+        public ActionResult Revert(int id) {
+            var desiredVersion = (from ver in db.Versions
+                                  where ver.VersionId == id
+                                  select ver).ToArray()[0];
+
+            var article = desiredVersion.Article;
+
+            var lastVersion = article.CurrentVersion;
+
+            var subsequentVersions = (from ver in db.Versions
+                                      where ver.ArticleId == desiredVersion.ArticleId &&
+                                      ver.VersionNo > desiredVersion.VersionNo
+                                      orderby ver.VersionNo descending
+                                      select ver).ToArray();
+
+            // change old connections
+            article.CurrentVersionId = id;
+            article.CurrentVersion = desiredVersion;
+            lastVersion.CurrentArticle = null;
+            db.SaveChanges();
+
+            // delete the subsequent versions to the desired one
+            foreach (var versionToDelete in subsequentVersions) {
+                versionToDelete.ChangedChapterId = null;
+                versionToDelete.ChangedChapter = null;
+                db.SaveChanges();
+                db.Versions.Remove(versionToDelete);
+                db.SaveChanges();
+            }
+
+            TempData["articleShowMessage"] = "Article has been reverted to a previous version.";
+
+            return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = article.ArticleId });
+        }
+
         [NonAction]
         public void DeleteEmptyChaptersFromDataBase() {
             var emptyChapters = from chapter in db.Chapters
