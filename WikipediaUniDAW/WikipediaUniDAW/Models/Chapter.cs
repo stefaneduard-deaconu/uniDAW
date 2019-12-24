@@ -19,7 +19,7 @@ namespace WikipediaUniDAW.Models {
         public int VersionId { get; set; }
 
         [Required(ErrorMessage = "Title is required!")]
-        [StringLength(30, ErrorMessage = "Title's length can't be greater than 30 characters!")]
+        [StringLength(50, ErrorMessage = "Title's length can't be greater than 50 characters!")]
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Content is required!")]

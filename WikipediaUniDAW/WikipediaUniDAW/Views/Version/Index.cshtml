@@ -3,8 +3,11 @@
     ViewBag.Title = "Versions of \"" + ViewBag.Article.Title + "\"";
 }
 
+@if (TempData.ContainsKey("versionIndexMessage")) {
+    <h3 class="alert alert-info text-center" role="alert">@ViewBag.versionIndexMessage</h3>
+}
+
 <div class="row">
-    <br />
     <h2 class="text-center">@ViewBag.Title</h2>
     <br />
     <div class="text-center">
@@ -12,10 +15,6 @@
     </div>
 </div>
 <br /> <br />
-
-@if (TempData.ContainsKey("versionIndexMessage")) {
-    <h3 class="alert alert-info text-center" role="alert">@ViewBag.versionIndexMessage</h3>
-}
 
 @foreach (var version in ViewBag.Versions) {
     <div class="row">
@@ -25,9 +24,9 @@
                 <div class="panel-heading">
                     @if (version.VersionId == ViewBag.Article.CurrentVersionId) {
                         <h3 class="panel-title">
-                                <strong>
-                                    Current Version
-                                </strong>
+                            <strong>
+                                Current Version
+                            </strong>
                         </h3>
                     } else {
                         <h3 class="panel-title">

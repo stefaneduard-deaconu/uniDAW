@@ -67,6 +67,8 @@ namespace WikipediaUniDAW.Controllers
                               where art.ArticleId == id
                               select art).ToArray()[0];
 
+            ViewBag.LoggedInUserId = User.Identity.GetUserId();
+
             return View(article);
         }
 
@@ -101,14 +103,16 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult Edit(int id) {
 
             Article article = db.Articles.Find(id);
             article.Categories = GetAllCategories();
 
-            if (User.IsInRole("Administrator") ||
-                    (article.CreatorUserId == User.Identity.GetUserId() || User.IsInRole("Moderator")) && 
-                    (!article.Frozen )
+            if ( User.IsInRole("Administrator") ||
+                 ( ( article.CreatorUserId == User.Identity.GetUserId() || User.IsInRole("Moderator") ) && 
+                     !article.Frozen
+                 )
             ) {
                 return View(article);
             } else {
@@ -118,10 +122,21 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public ActionResult Edit(int id, Article requestArticle) {
             try {
                 if (ModelState.IsValid) {
                     Article article = db.Articles.Find(id);
+
+                    if ( !User.IsInRole("Administrator") &&
+                         ( ( article.CreatorUserId != User.Identity.GetUserId() && !User.IsInRole("Moderator") ) ||
+                             article.Frozen
+                         )
+                    ) {
+                        TempData["articleShowMessage"] = "You are not allowed to edit this article's details!";
+                        return RedirectToAction("Show", new { id = id });
+                    }
+
                     if (TryUpdateModel(article)) {
                         article.CategoryId = requestArticle.CategoryId;
                         article.Title = requestArticle.Title;
@@ -141,10 +156,21 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public ActionResult Delete(int id) {
 
             Article article= db.Articles.Find(id);
             Category category = article.Category;
+
+            if ( !User.IsInRole("Administrator") &&
+                    ( article.CreatorUserId != User.Identity.GetUserId() ||
+                      article.Frozen
+                    )
+            ) {
+                TempData["articleShowMessage"] = "You are not allowed to delete this article!";
+                return RedirectToAction("Show", new { id = id });
+            }
+
             db.Articles.Remove(article);
             TempData["articleMessage"] = "The article has been deleted!";
             db.SaveChanges();

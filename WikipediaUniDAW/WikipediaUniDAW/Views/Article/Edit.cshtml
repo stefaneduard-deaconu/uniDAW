@@ -28,10 +28,13 @@
     @Html.Label("Protected", "Article should be protected.")
     <br />
 
-    @Html.CheckBox("Frozen", Model.Frozen)
-    @Html.Label("Frozen", "Article should be frozen.")
-    <br /><br />
+    @if (User.IsInRole("Administrator")) {
+        @Html.CheckBox("Frozen", Model.Frozen)
+        @Html.Label("Frozen", "Article should be frozen.")
+        <br />
+    }
 
+    <br />
     <button class="btn btn-sm btn-primary" type="submit">Save Details</button>
 </form>
 

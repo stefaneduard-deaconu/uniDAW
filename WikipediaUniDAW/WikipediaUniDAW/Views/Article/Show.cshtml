@@ -17,14 +17,29 @@
         <i class="glyphicon glyphicon-minus-sign align-left"></i>
         <span class="align-left" style="margin: 0 20px 0 5px;">Frozen</span>
     }
-    <form method="post" action="/Article/Delete/@Model.ArticleId" style="display: inline; float: right;">
-        @Html.HttpMethodOverride(HttpVerbs.Delete)
-        <button class="btn btn-danger align-right" type="submit">Delete Article</button>
-    </form>
 
-    <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Article/Edit/@Model.ArticleId"> Edit Details</a>
-    <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Version/Index/@Model.ArticleId"> Versions</a>
-    <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Chapter/NewChapterForExistingArticle/@Model.ArticleId"> Add Chapter</a>
+    @if ( User.IsInRole("Administrator") ||
+          Model.CreatorUserId == ViewBag.LoggedInUserId
+    ) {
+        <form method="post" action="/Article/Delete/@Model.ArticleId" style="display: inline; float: right;">
+            @Html.HttpMethodOverride(HttpVerbs.Delete)
+            <button class="btn btn-danger align-right" type="submit">Delete Article</button>
+        </form>
+    }
+
+    @if ( User.IsInRole("Administrator") || User.IsInRole("Moderator") ||
+          Model.CreatorUserId == ViewBag.LoggedInUserId
+    ) {
+        <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Article/Edit/@Model.ArticleId"> Edit Details</a>
+    }
+
+    @if ( User.IsInRole("Administrator") || User.IsInRole("Moderator") ) {
+        <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Version/Index/@Model.ArticleId"> Versions</a>
+    }
+
+    @if ( User.IsInRole("Administrator") || User.IsInRole("Moderator") || User.IsInRole("User") || !Model.Protected ) {
+        <a class="btn btn-primary" style="display: inline; float: right; margin-right: 10px" href="/Chapter/NewChapterForExistingArticle/@Model.ArticleId"> Add Chapter</a>
+    }
 
     <div style="clear: both;"></div>
 </div>
@@ -33,12 +48,13 @@
 @foreach (var chapter in Model.CurrentVersion.Chapters) {
     <h2>
         @chapter.Title
-        <form method="post" action="/Chapter/DeleteChapterForExistingArticle/@chapter.ChapterId" style="display: inline; float: right; margin-right: 10px">
-            @Html.HttpMethodOverride(HttpVerbs.Delete)
-            <button class="btn btn-danger align-right" type="submit"> Remove </button>
-        </form>
-        @*<a class="btn btn-danger align-right" style="margin-right: 10px" href="">Delete</a>*@
-        <a class="btn btn-primary align-right" style="margin-right: 10px" href="/Chapter/EditChapterForExistingArticle/@chapter.ChapterId">Edit</a>
+        @if ( User.IsInRole("Administrator") || User.IsInRole("Moderator") || User.IsInRole("User") || !Model.Protected ) {
+            <form method="post" action="/Chapter/DeleteChapterForExistingArticle/@chapter.ChapterId" style="display: inline; float: right; margin-right: 10px">
+                @Html.HttpMethodOverride(HttpVerbs.Delete)
+                <button class="btn btn-danger align-right" type="submit"> Remove </button>
+            </form>
+            <a class="btn btn-primary align-right" style="margin-right: 10px" href="/Chapter/EditChapterForExistingArticle/@chapter.ChapterId">Edit</a>
+        }
     </h2>
     <hr />
     <br />

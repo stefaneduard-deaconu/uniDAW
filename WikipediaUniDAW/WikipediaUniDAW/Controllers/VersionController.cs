@@ -12,7 +12,13 @@ namespace WikipediaUniDAW.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        [HttpGet]
+        [Authorize(Roles = "Moderator,Administrator")]
         public ActionResult Index(int articleId) {
+
+            if (TempData.ContainsKey("versionIndexMessage")) {
+                ViewBag.versionIndexMessage = TempData["versionIndexMessage"].ToString();
+            }
 
             var versions = from ver in db.Versions
                            where ver.ArticleId == articleId
@@ -30,6 +36,7 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult NewVersionForNewArticle(int articleId) {
 
             DeleteEmptyChaptersFromDataBase();
@@ -74,6 +81,7 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult NewVersionForNewArticle(Models.Version version) {
 
             DeleteEmptyChaptersFromDataBase();
@@ -111,6 +119,7 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Moderator,Administrator")]
         public ActionResult Revert(int id) {
             var desiredVersion = (from ver in db.Versions
                                   where ver.VersionId == id
@@ -125,6 +134,14 @@ namespace WikipediaUniDAW.Controllers
                                       ver.VersionNo > desiredVersion.VersionNo
                                       orderby ver.VersionNo descending
                                       select ver).ToArray();
+
+            // check user permissions
+            if ( article.Frozen &&
+                 !User.IsInRole("Administrator")
+            ) {
+                TempData["versionIndexMessage"] = "This article is frozen! You are not allowed to revert to previous versions.";
+                return RedirectToAction("Index", new { articleId = article.ArticleId });
+            }
 
             // change old connections
             article.CurrentVersionId = id;

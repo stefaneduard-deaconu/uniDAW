@@ -27,9 +27,12 @@
     @Html.Label("Protected", "Article should be protected.")
     <br />
 
-    @Html.CheckBox("Frozen", false)
-    @Html.Label("Frozen", "Article should be frozen.")
-    <br /><br />
-
+    if (User.IsInRole("Administrator")) {
+        @Html.CheckBox("Frozen", false)
+        @Html.Label("Frozen", "Article should be frozen.")
+        <br />
+    }
+    
+    <br />
     <button class="btn btn-primary" type="submit">Next Step</button>
 }

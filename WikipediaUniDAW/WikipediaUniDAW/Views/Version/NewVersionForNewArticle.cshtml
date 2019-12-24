@@ -16,10 +16,11 @@
 <br /><br />
 
 @foreach (var chapter in Model.Chapters) {
-    <div class="panel panel-default">
+    <div>
         <div class="row">
             <div class="col-md-10">
-                <h3 class="panel-title">@chapter.Title</h3>
+                <h4>@chapter.Title</h4>
+                <hr />
             </div>
             <div class="col-md-1">
                 <a class="btn btn-primary" href="/Chapter/EditChapterForNewArticle/@chapter.ChapterId/@chapter.Version.Article.ArticleId">Edit</a>
@@ -42,6 +43,7 @@
     @Html.HiddenFor(m => m.VersionNo)
     @Html.Hidden("DateChange", DateTime.Now, new { @class = "form-control" })
     @Html.HiddenFor(m => m.DescriptionChange)
-
+    
+    <br />
     <button class="btn btn-primary" type="submit">Create article</button>
 }

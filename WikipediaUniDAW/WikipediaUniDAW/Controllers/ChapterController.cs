@@ -14,6 +14,7 @@ namespace WikipediaUniDAW.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         [HttpGet]
+        [Authorize]
         public ActionResult NewChapterForNewArticle(int articleId) {
 
             Article article = (from art in db.Articles
@@ -39,6 +40,7 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [ValidateInput(false)]
         public ActionResult NewChapterForNewArticle(Chapter chapter) {
 
@@ -72,14 +74,14 @@ namespace WikipediaUniDAW.Controllers
                                where art.ArticleId == articleId
                                select art).ToArray()[0];
 
+            // check user permissions
+            if (DenyUserPermission(article, "This article is frozen! You are not allowed to add new chapters.")) {
+                return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = article.ArticleId });
+            }
+
             chapter.Version = article.CurrentVersion;
             chapter.VersionId = article.CurrentVersion.VersionId;
 
-            //ViewBag.ArticleId = article.ArticleId;
-
-            //chapter.Version = (from version in db.Versions
-            //                  where (from art in version.CurrentArticle select art.ArticleId).ToArray().Contains(articleId)
-            //                  select version).ToArray()[0];
             return View(chapter);
         }
 
@@ -102,6 +104,11 @@ namespace WikipediaUniDAW.Controllers
                     Chapter[] chaptersOfOldVersion = (from chap in db.Chapters
                                                       where chap.VersionId == oldVersion.VersionId
                                                       select chap).ToArray();
+
+                    // check user permissions
+                    if (DenyUserPermission(article, "This article is frozen! You are not allowed to add new chapters.")) {
+                        return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = article.ArticleId });
+                    }
 
                     // remove old associations
                     article.CurrentVersionId = null;
@@ -159,6 +166,7 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult EditChapterForNewArticle(int chapterId, int articleId) {
 
             Chapter chapter = db.Chapters.Find(chapterId);
@@ -167,6 +175,7 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         [ValidateInput(false)]
         public ActionResult EditChapterForNewArticle(Chapter chapter) {
 
@@ -196,6 +205,11 @@ namespace WikipediaUniDAW.Controllers
         public ActionResult EditChapterForExistingArticle(int id) {
             Chapter chapter = db.Chapters.Find(id);
 
+            // check user permissions
+            if (DenyUserPermission(chapter.Version.Article, "This article is frozen! You are not allowed to edit its chapters.")) {
+                return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = chapter.Version.ArticleId });
+            }
+
             ViewBag.DescriptionChange = "";
 
             return View(chapter);
@@ -215,6 +229,11 @@ namespace WikipediaUniDAW.Controllers
                                              select ver).ToArray()[0];
                 Article article = oldVersion.Article;
                 Chapter[] chaptersOfOldVersion = oldVersion.Chapters.ToArray();
+
+                // check user permissions
+                if (DenyUserPermission(article, "This article is frozen! You are not allowed to edit its chapters.")) {
+                    return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = article.ArticleId });
+                }
 
                 // remove old associations
                 article.CurrentVersionId = null;
@@ -277,6 +296,7 @@ namespace WikipediaUniDAW.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public ActionResult DeleteChapterForNewArticle(int chapterId, int articleId) {
 
             Chapter chapter = db.Chapters.Find(chapterId);
@@ -294,6 +314,11 @@ namespace WikipediaUniDAW.Controllers
             Models.Version oldVersion = chapterToDelete.Version;
             Article article = oldVersion.Article;
             Chapter[] chaptersOfOldVersion = oldVersion.Chapters.ToArray();
+
+            // check user permissions
+            if (DenyUserPermission(article, "This article is frozen! You are not allowed to delete its chapters.")) {
+                return RedirectToRoute("Default", new { controller = "Article", action = "Show", id = article.ArticleId });
+            }
 
             // remove old associations
             article.CurrentVersionId = null;
@@ -354,6 +379,28 @@ namespace WikipediaUniDAW.Controllers
                 });
                 db.SaveChanges();
             }
+        }
+
+        [NonAction]
+        private bool DenyUserPermission(Article article, String frozenArticleMessage) {
+
+            if ( article.Frozen &&
+                 !User.IsInRole("Administrator")
+            ) {
+                TempData["articleShowMessage"] = frozenArticleMessage;
+                return true;
+            }
+
+            if ( !User.IsInRole("Administrator") &&
+                 !User.IsInRole("Moderator") &&
+                 !User.IsInRole("User") &&
+                 article.Protected 
+            ) {
+                TempData["articleShowMessage"] = "This article is protected against unregistered users!";
+                return true;
+            }
+
+            return false;
         }
     }
 }
