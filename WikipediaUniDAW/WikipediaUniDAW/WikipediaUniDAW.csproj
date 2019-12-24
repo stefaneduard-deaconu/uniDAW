@@ -268,6 +268,7 @@
     <Content Include="Views\Home\Category.cshtml" />
     <Content Include="Views\Home\Search.cshtml" />
     <Content Include="Views\Chapter\EditChapterForExistingArticle.cshtml" />
+    <Content Include="Views\Version\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

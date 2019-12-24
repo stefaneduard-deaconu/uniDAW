@@ -12,7 +12,19 @@ namespace WikipediaUniDAW.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public ActionResult Index() {
+        public ActionResult Index(int articleId) {
+
+            var versions = from ver in db.Versions
+                           where ver.ArticleId == articleId
+                           orderby ver.DateChange descending
+                           select ver;
+
+            var article = (from art in db.Articles
+                               where art.ArticleId == articleId
+                               select art).ToArray()[0];
+
+            ViewBag.Versions = versions;
+            ViewBag.Article = article;
 
             return View();
         }

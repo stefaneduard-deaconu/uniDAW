@@ -45,8 +45,6 @@ namespace WikipediaUniDAW.Controllers
             ViewBag.Articles = articles;
             ViewBag.CategoryName = GetCategoryName(categoryId);
 
-            // TODO: use ViewBag.IntroChapters array to store first chapter of each article to be displayed
-
             return View(new Article());
         }
 

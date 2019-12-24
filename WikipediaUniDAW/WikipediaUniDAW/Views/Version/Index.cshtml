@@ -1,0 +1,56 @@
+﻿@model WikipediaUniDAW.Models.Version
+@{
+    ViewBag.Title = "Versions of \"" + ViewBag.Article.Title + "\"";
+}
+
+<div class="row">
+    <br />
+    <h2 class="text-center">@ViewBag.Title</h2>
+    <br />
+    <div class="text-center">
+        <a class="btn btn-primary" href="/Article/Show/@ViewBag.Article.ArticleId"> Back to Article</a>
+    </div>
+</div>
+<br /> <br />
+
+@if (TempData.ContainsKey("versionIndexMessage")) {
+    <h3 class="alert alert-info text-center" role="alert">@ViewBag.versionIndexMessage</h3>
+}
+
+@foreach (var version in ViewBag.Versions) {
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    @if (version.VersionId == ViewBag.Article.CurrentVersionId) {
+                        <h3 class="panel-title">
+                                <strong>
+                                    Current Version
+                                </strong>
+                        </h3>
+                    } else {
+                        <h3 class="panel-title">
+                            Version No. @version.VersionNo
+                        </h3>
+                    }
+                </div>
+                <div class="panel-body">
+                    <p> Edit Date: <em>@version.DateChange </em> </p>
+                    @if (version.ChangedChapterId != null) {
+                        <p> Changed chapter: <em>@version.ChangedChapter.Title</em> </p>
+                    }
+                    <p> Edited By: <strong> @version.ModifierUser.UserName </strong> </p>
+                    <p> Details: <em>@version.DescriptionChange</em></p>
+                </div>
+                @if (version.VersionId != ViewBag.Article.CurrentVersionId) {
+                    <div class="panel-footer">
+                        <a class="btn btn-primary" href="/Version/Revert/@version.VersionId">
+                            Revert to here <i class="glyphicon glyphicon-share-alt"></i>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
