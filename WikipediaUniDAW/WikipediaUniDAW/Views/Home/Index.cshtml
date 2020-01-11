@@ -18,12 +18,12 @@
        onclick="$('#search-submit').click()"></i>
     <button id="search-submit" type="submit" hidden
             onclick="let url = `/Home/Search/${$('#glyph-div>input').val()}`; console.log(url); window.location.replace(url);">
-        This remains hidden :D.
+        This remains hidden 😀.
     </button>
     <a id="search-redirect-anchor" href="" class="hidden">Redirect to the right uri</a>
     @*<button id="search-submit" type="submit" hidden
-                onclick="let url = '/Home/Search/'; $(`<a href='${url + $('#glyph-div>input').val()}'></a>`).click();">
-            This remains hidden :D.
+                onclick="let url = '/Home/Search/'; $(<a href='${url + $('#glyph-div>input').val()}'></a>).click();">
+            This remains hidden 😀.
         </button>*@
 
     @*onclick="let query = $('#glyph-div>a').get(0).href; $('#search-redirect-anchor').attr('href', '/Home/Search/' + query); $('#search-redirect-anchor').click()"></i>*@
@@ -31,7 +31,7 @@
 </form>
 
 <div class="dropdown col-md-2 center-block"
-        style="margin-top: 10px;">
+     style="margin-top: 10px;">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true"
             style="background: whitesmoke; border: 1px solid black; padding: 7px 15px; height: 50px; font-size: 15px; border-radius: 100px;
                     text-align: center; ">
@@ -39,12 +39,10 @@
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
         @{int index = 0; }
-        @foreach (WikipediaUniDAW.Models.Category category in ViewBag.Categories)
-        {
-            
+        @foreach (WikipediaUniDAW.Models.Category category in ViewBag.Categories) {
+
             <li><a class="dropdown-item" href="/Home/Category/@category.CategoryId">@category.Name</a></li>
-            if (index % 5 == 4)
-            {
+            if (index % 5 == 4) {
                 <li role="separator" class="divider"></li>
             }
         }
@@ -52,7 +50,7 @@
 </div>
 
 @*onmouseenter="$('#dropdown-links').dropdown('toggle')"
-onmouseout="$('#dropdown-links').dropdown('toggle')"*@
+    onmouseout="$('#dropdown-links').dropdown('toggle')"*@
 
 
 
@@ -72,48 +70,59 @@ onmouseout="$('#dropdown-links').dropdown('toggle')"*@
     </header>
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
-            <form class="text-center" style="margin: 20px 0px" method="post" action="">
+            <form id="sort" class="text-center" style="margin: 20px 0px" method="get" action="">
                 <text>Sort our articles by</text>
                 <select name="sort">
-                    @foreach (var sort in ViewBag.Sorts)
-                    {
+                    @foreach (var sort in ViewBag.Sorts) {
                         <option value="@sort.Value">@sort.Key</option>
                     }
                 </select>
                 <select name="order">
-                    @foreach (var order in ViewBag.Orders)
-                    {
+                    @foreach (var order in ViewBag.Orders) {
                         <option value="@order.Value">@order.Key</option>
                     }
                 </select>
-                <button type="submit">Load results!</button>
+                <button type='button' onclick="redirectToHiddenButton()">
+                    Load results!
+                </button>
+                <button type="submit" hidden>Load results!</button>
             </form>
-                @foreach (WikipediaUniDAW.Models.Article article in ViewBag.articles)
-                {
-                    <div class="row">
-                        <div class="col-md-10 col-md-offset-1">
-                            <div class="panel panel-primary">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title"> @article.Title </h3>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="truncate">
-                                        <div>
-                                            @Html.Raw(article.GetFirstChapter().Content)
-                                        </div>
+            @foreach (WikipediaUniDAW.Models.Article article in ViewBag.articles) {
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"> @article.Title </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="truncate">
+                                    <div>
+                                        @Html.Raw(article.GetFirstChapter().Content)
                                     </div>
                                 </div>
-                                <div class="panel-footer">
-                                    <a class="btn btn-primary" href="/Article/Show/@article.ArticleId"> Show Article </a>
-                                </div>
+                            </div>
+                            <div class="panel-footer">
+                                <a class="btn btn-primary" href="/Article/Show/@article.ArticleId"> Show Article </a>
+                                <span style="position: absolute; right: 35px; bottom: 35px;">Created at @article.CreationDate.ToShortDateString() by <span style="color: blue">@article.CreatorUser.UserName</span></span>
                             </div>
                         </div>
                     </div>
-                    <br />
-                }
-            </div>
+                </div>
+                <br />
+            }
         </div>
+    </div>
 </section>
 
-
-
+<script type="text/javascript">
+    function redirectToHiddenButton() {
+        console.log('CEVA');
+        let form = $('form#sort').serializeArray();
+        console.log(form);
+        let sort = form[0].value;
+        let order = form[1].value;
+        let url = `/Home/${sort}/${order}`; 
+        window.location.replace(url)
+        //$('form#sort>button[type=submit]').click();
+    }
+</script>

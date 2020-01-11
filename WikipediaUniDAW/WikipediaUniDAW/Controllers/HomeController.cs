@@ -14,20 +14,40 @@ namespace WikipediaUniDAW.Controllers {
         public ActionResult Index(int sort = 0, int order = 0) {
             ViewBag.Message = "Homepage";
 
-            var articles = from article in db.Articles
-                           select article;
+            //var articles = from article in db.Articles
+            //               select article;
+            IOrderedQueryable<Article> articles = null;
+
             switch(sort)
             {
                 case 0: // sort by title
-                    articles = articles.OrderBy(a => a.Title);
+                    if (order == 0) {
+                        articles = from article in db.Articles
+                                       orderby article.Title ascending
+                                       select article;
+                    } else {
+                        articles = from article in db.Articles
+                                   orderby article.Title descending
+                                   select article;
+                    }
+                    //articles = articles.OrderBy(a => a.Title);
                     break;
                 case 1: // sort by date created
-                    articles = articles.OrderBy(a => a.CreationDate);
+                    if (order == 0) {
+                        articles = from article in db.Articles
+                                   orderby article.CreationDate ascending
+                                   select article;
+                    } else {
+                        articles = from article in db.Articles
+                                   orderby article.CreationDate descending
+                                   select article;
+                    }
+                    //articles = articles.OrderBy(a => a.CreationDate);
                     break;
             }
             // it only happens when the argument is "true" (url)
-            if (order == 1)
-                articles.Reverse();
+            //if (order == 1)
+            //    articles = articles.Reverse();
 
             ViewBag.Articles = articles;
             //ViewBag.Sort = sort;
